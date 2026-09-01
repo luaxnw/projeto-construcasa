@@ -1,11 +1,10 @@
 const express = require('express');
-
 const app = express();
-app.use(express.json());
-
+const clientesRouter = require("./clientes/clientes-routes");
 const PORTA = 3001;
 
-const clientesRouter = require("./clientes/clientes-routes");
+app.use(express.json());
+app.use(express.static("public"))
 
 app.listen(PORTA, () => {
     console.log(`servidor rodando na porta ${PORTA}`);
