@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 const express = require('express');
 const app = express();
 const clientesRouter = require("./clientes/clientes-routes");
