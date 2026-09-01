@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clientes</title>
 </head>
+
 <body>
     <div class="tables">
         <table>
@@ -37,23 +39,25 @@
             <h2>Cadastro de Clientes</h2>
 
             <form id="formCliente">
-                <label for="id">ID:</label>
-                <input type="number" id="idCliente" name="id" required>
+                <label for="idCliente">ID:</label>
+                <input type="number" id="idCliente" name="idCliente" required>
 
-                <label for="nome">Nome:</label>
-                <input type="text" id="nomeCliente" name="nome" required>
+                <label for="nomeCliente">Nome:</label>
+                <input type="text" id="nomeCliente" name="nomeCliente" required>
 
-                <label for="contato">Contato:</label>
-                <input type="text" id="contatoCliente" name="contato" required>
+                <label for="contatoCliente">Contato:</label>
+                <input type="text" id="contatoCliente" name="contatoCliente" required>
 
                 <label for="valorContrato">Valor Contrato</label>
                 <input type="number" id="valorContrato" name="valorContrato">
 
-                <button type="submit"
-
+                <button type="submit">Salvar Cliente</button>
             </form>
+
+            <p id="mensagem"></p>
         </div>
     </div>
-    
+
 </body>
+
 </html>
