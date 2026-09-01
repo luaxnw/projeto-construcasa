@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes</title>
+</head>
+<body>
+    <div class="tables">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>NOME</th>
+                    <th>ENDEREÇO</th>
+                    <th>CONTATO RESPONSVÁVEL</th>
+                    <th>VALOR MENSALIDADE</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <button id="btnCadastroCliente">Cadastrar Cliente</button>
+
+    <div id="modalCliente" class="modal">
+        <div class="modal-content">
+            <span id="fecharModal" class="fechar">&times;</span>
+
+            <h2>Cadastro de Clientes</h2>
+
+            <form id="formCliente">
+                <label for="id">ID:</label>
+                <input type="number" id="idCliente" name="id" required>
+
+                <label for="nome">Nome:</label>
+                <input type="text" id="nomeCliente" name="nome" required>
+
+                <label for="contato">Contato:</label>
+                <input type="text" id="contatoCliente" name="contato" required>
+
+                <label for="valorContrato">Valor Contrato</label>
+                <input type="number" id="valorContrato" name="valorContrato">
+
+                <button type="submit"
+
+            </form>
+        </div>
+    </div>
+    
+</body>
+</html>
