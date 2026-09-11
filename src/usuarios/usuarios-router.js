@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
-const database = require('../database');
+const db = require('../database');
 
 // ROTAS    
 router.get('/', (req, res) => {
-    res.status(200).json({ usuarios: "usuario" });
+    res.status(200).json(db.usuarios);
 });
 
 router.get('/:id', (req, res) => {
@@ -17,26 +17,35 @@ router.get('/:id', (req, res) => {
         });
     };
 
-    const usuario = database.usuarios.find(u => u.id === id);
+    const usuario = db.usuarios.find(u => u.id === id);
     if (!usuario)
-        return res.status(404).json({erro: `Usuário de id ${id} não encontrado`});
+        return res.status(404).json({ erro: `Usuário de id ${id} não encontrado` });
 
     return res.status(200).json(usuario);
 });
 
 router.post('/', (req, res) => {
     const { nome, email, senha } = req.body;
+    let id = req.body;
 
-    if (!nome || !email || !senha) {
+    if (!nome || !email || !senha || id == undefined) {
         return res.status(400).json({
             erro: "Informe dados válidos",
             detalhes: [
+                id == undefined && { campo: "ID", mensagem: "Obrigatório" },
                 !nome && { campo: "nome", mensagem: "Obrigatóro" },
                 !email && { campo: "email", mensagem: "Obrigatório" },
                 !senha && { campo: "senha", mensagem: "Obrigatório" },
             ].filter(Boolean)
         });
     };
+
+    id = parseInt(id);
+
+    if (Number.isNaN(id))
+        return res.status(400).json({
+            erro: "informe id inteiro"
+        });
 
     const usuarioNovo = {
         id: proximoId++,
@@ -45,10 +54,10 @@ router.post('/', (req, res) => {
         senha: senha
     };
 
-    database.usuarios.push(usuarioNovo);
+    db.usuarios.push(usuarioNovo);
 
     return res.status(201).set('Location', '/api/usuarios/' + usuarioNovo.id)
-    .json(usuarioNovo);
+        .json(usuarioNovo);
 
 });
 
