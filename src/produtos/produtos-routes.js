@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 
 const db = require('../database');
-const { route } = require('../usuarios/usuarios-router');
 
 // ROTAS
 
@@ -11,5 +10,8 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', (req, res) => {
-    
-})
+
+});
+
+module.exports = router;
+
