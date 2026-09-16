@@ -3,7 +3,9 @@ const fs = require('fs');
 const database = {
     usuarios: [],
     produtos: [],
-    categorias: []
+    categorias: [],
+    estoque: [],
+    pedidos: []
 
 }
 
