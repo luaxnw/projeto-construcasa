@@ -17,22 +17,20 @@ router.get('/:id', (req, res) => {
         });
     };
 
-    const usuario = db.usuarios.find(u => u.id === id);
-    if (!usuario)
-        return res.status(404).json({ erro: `Usuário de id ${id} não encontrado` });
+    const indexUsuario = db.usuarios.findIndex((u) => u.id === id);
+    if (indexUsuario === -1)
+        return res.status(404).json({ erro: `Usuário de ${id} não econtrado` });
 
     return res.status(200).json(usuario);
 });
 
 router.post('/', (req, res) => {
     const { nome, email, senha } = req.body;
-    let id = req.body;
 
-    if (!nome || !email || !senha || id == undefined) {
+    if (!nome || !email || !senha) {
         return res.status(400).json({
             erro: "Informe dados válidos",
             detalhes: [
-                id == undefined && { campo: "ID", mensagem: "Obrigatório" },
                 !nome && { campo: "nome", mensagem: "Obrigatóro" },
                 !email && { campo: "email", mensagem: "Obrigatório" },
                 !senha && { campo: "senha", mensagem: "Obrigatório" },
@@ -40,15 +38,8 @@ router.post('/', (req, res) => {
         });
     };
 
-    id = parseInt(id);
-
-    if (Number.isNaN(id))
-        return res.status(400).json({
-            erro: "informe id inteiro"
-        });
-
     const usuarioNovo = {
-        id: proximoId++,
+        id: db.proximoIdUsuario++,
         nome: nome,
         email: email,
         senha: senha
@@ -58,10 +49,34 @@ router.post('/', (req, res) => {
 
     return res.status(201).set('Location', '/api/usuarios/' + usuarioNovo.id)
         .json(usuarioNovo);
-
 });
 
+router.patch()
 
+router.put('/', (req, res) => {
+    const id = parseInt(req.params.id);
+    const { nome, email, senha } = req.body;
+
+    if (!nome || !email || !senha) {
+        return res.status(400).json({
+            erro: "Informe dados válidos",
+            detalhes: [
+                !nome && { campo: "nome", mensagem: "Obrigatóro" },
+                !email && { campo: "email", mensagem: "Obrigatório" },
+                !senha && { campo: "senha", mensagem: "Obrigatório" },
+            ].filter(Boolean)
+        });
+    };
+
+    const indexUsuario = db.usuarios.findIndex((u) => u.id === id);
+    if (indexUsuario === -1)
+        return res.status(404).json({ erro: `Usuário de ${id} não econtrado` });
+
+    db.usuarios[indexUsuario] = { id, nome, email, senha };
+
+    return res.status(201).set('Location', '/api/usuarios/' + id)
+        .json(db.usuarios[indexUsuario]);
+});
 
 
 module.exports = router;
