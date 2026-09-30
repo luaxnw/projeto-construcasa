@@ -51,8 +51,6 @@ router.post('/', (req, res) => {
         .json(usuarioNovo);
 });
 
-router.patch()
-
 router.put('/', (req, res) => {
     const id = parseInt(req.params.id);
     const { nome, email, senha } = req.body;

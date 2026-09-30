@@ -1,15 +1,15 @@
 {
-  "name": "projeto-construcasa",
+  "name": "backend",
   "version": "1.0.0",
-  "main": "index.js",
-  "repository": "git@github.com:luaxnw/projeto-construcasa.git",
-  "author": "luaxnw <luan.pescador@estudante.uffs.edu.br>",
-  "license": "MIT",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
+  "packageManager": "yarn@4.18.0",
   "dependencies": {
     "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
   }
 }
