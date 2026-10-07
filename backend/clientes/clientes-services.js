@@ -1,35 +1,24 @@
 const clientesRepository = require('./clientes-repository');
 
-function listarClientes() {
+async function listarClientes() {
     return clientesRepository.listarClientes;
 };
 
-function procurarUsuarioPorID(id) {
-    return clientesRepository.listarClientesPorID()
+async function listarClientePorID(id) {
+    return clientesRepository.listarClientePorID(id)
 };
 
-function procurarUsuarioPorEmail(email) {
-    return db.usuarios.find((u) => u.email === email);
+async function listarClientePorEmail(email) {
+    return clientesRepository.listarClientePorEmail(email);
 };
 
-function cadastrarUsuario(nome, email, senha) {
-
-    if (procurarUsuarioPorEmail(email))
-        throw new Error("Email já está cadastrado no sistema");
-
-    const usuarioNovo = {
-        id: db.proximoIdUsuario++,
-        nome: nome,
-        email: email,
-        senha: senha
-    };
-
-    db.usuarios.push(usuarioNovo);
-
-    return usuarioNovo;
+async function criarCliente(cliente) {
+    return clientesRepository.criarCliente(cliente);
 };
 
 module.exports = {
     listarClientes,
-
+    listarClientePorID,
+    listarClientePorEmail,
+    criarCliente
 };
