@@ -1,19 +1,6 @@
-const fs = require('fs');
+const pgp = require("pg-promise")();
 
-const database = {
-    proximoIdUsuario: 1,
-    usuarios: [],
 
-    proximoIdProduto: 1,
-    produtos: [],
+const db = pgp("postgres://postgres:postgres@localhost:5432/construcasa");
 
-    proximoIdCategoria: 1,
-    categorias: [],
-
-    estoque: [],
-    
-    proximoIdPedido: 1,
-    pedidos: []
-}
-
-module.exports = database;
+module.exports = db;
