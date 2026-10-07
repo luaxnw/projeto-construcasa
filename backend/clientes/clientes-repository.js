@@ -21,7 +21,7 @@ async function criarCliente(cliente) {
 
 module.exports = {
     listarClientes,
-    listarClientesPorID,
+    listarClientePorID,
     listarClientePorEmail,
     criarCliente
 };
