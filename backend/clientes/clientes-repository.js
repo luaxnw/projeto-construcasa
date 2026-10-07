@@ -1,13 +1,29 @@
-const db = require('../database');
+const db = require('../database/database');
 
-async function listarUsuarios() {
-    return db.any("SELECT * FROM usuarios ORDER BY nome");    
+async function listarClientes() {
+    return db.any("SELECT * FROM clientes ORDER BY nome");    
 }
 
-async function listarUsuarioPorID(id) {
-    db.oneOrNoNE("SELECT * FROM autores WHERE id = $1", [id]);
+async function listarClientesPorID(id) {
+    return db.oneOrNoNE("SELECT * FROM clientes WHERE id = $1", [id]);
 }
 
-async function listarUsuarioPorEmail(email) {
-    db.oneOrNoNe("SELECT * FROM autores WHERE email = $1", [email]);
+async function listarClientePorEmail(email) {
+    return db.oneOrNoNe("SELECT * FROM clientes WHERE email = $1", [email]);
 };
+
+async function criarCliente(cliente) {
+    return db.one(
+        "INSERT INTO clientes (nome, email, telefone, endereco) VALUES ($1, $2, $3, $4) RETURNING *",
+        [cliente.nome, cliente.email, cliente.telefone, cliente.endereco]
+    );
+}
+
+module.exports = {
+    listarClientes,
+    listarClientesPorID,
+    listarClientePorEmail,
+    criarCliente
+};
+
+
