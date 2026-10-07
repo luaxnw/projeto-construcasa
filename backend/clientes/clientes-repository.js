@@ -4,7 +4,7 @@ async function listarClientes() {
     return db.any("SELECT * FROM clientes ORDER BY nome");    
 }
 
-async function listarClientesPorID(id) {
+async function listarClientePorID(id) {
     return db.oneOrNoNE("SELECT * FROM clientes WHERE id = $1", [id]);
 }
 
