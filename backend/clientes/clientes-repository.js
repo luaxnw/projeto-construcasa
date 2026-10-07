@@ -10,7 +10,11 @@ async function listarClientePorID(id) {
 
 async function listarClientePorEmail(email) {
     return db.oneOrNoNe("SELECT * FROM clientes WHERE email = $1", [email]);
-};
+}
+
+async function listarClientePorTelefone(telefone) {
+    return db.oneOrNoNE("SELECT * FROM clientes WHERE telefone = $1", [telefone]);
+}
 
 async function criarCliente(cliente) {
     return db.one(
@@ -23,6 +27,7 @@ module.exports = {
     listarClientes,
     listarClientePorID,
     listarClientePorEmail,
+    listarClientePorTelefone,
     criarCliente
 };
 
