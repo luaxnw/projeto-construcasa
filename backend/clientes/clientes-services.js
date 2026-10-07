@@ -1,11 +1,11 @@
-const db = require('../database/database');
+const clientesRepository = require('./clientes-repository');
 
-function listarUsuarios() {
-    return db.usuarios;
+function listarClientes() {
+    return clientesRepository.listarClientes;
 };
 
 function procurarUsuarioPorID(id) {
-    return db.usuarios.find((u) => u.id === id);
+    return clientesRepository.listarClientesPorID()
 };
 
 function procurarUsuarioPorEmail(email) {
@@ -30,8 +30,6 @@ function cadastrarUsuario(nome, email, senha) {
 };
 
 module.exports = {
-    listarUsuarios,
-    procurarUsuarioPorEmail,
-    cadastrarUsuario,
-    procurarUsuarioPorID
+    listarClientes,
+
 };
