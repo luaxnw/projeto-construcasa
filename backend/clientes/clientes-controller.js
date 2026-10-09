@@ -1,8 +1,8 @@
-const clientesServices = require('./clientes-services');
+const services = require('./clientes-services');
 
 async function listarClientes(req, res) {
     try {
-        const clientes = await clientesServices.listarClientes();
+        const clientes = await services.listarClientes();
         return res.status(200).json(clientes);
     } catch (erro) {
         console.log("Erro ao buscar clientes:", erro);
@@ -19,7 +19,7 @@ async function listarClientePorID(req, res) {
                 erro: "ID informado não é inteiro"
             });
         }
-        const cliente = await clientesServices.listarClientePorID(id);
+        const cliente = await services.listarClientePorID(id);
 
         if (!cliente) {
             console.log(`Cliente de ${id} não localizado`);
@@ -36,24 +36,15 @@ async function listarClientePorID(req, res) {
 }
 
 async function criarCliente(req, res) {
+    const { nome, email, telefone, endereco } = req.body;
+
     try {
-        const { nome, email, telefone, endereco } = req.body;
-
-        if (await clientesServices.listarClientePorEmail(email)) {
-            console.log("Email já cadastrado");
-            return res.status(409).json({
-                erro: "Email já cadastrado"
-            });
-        }
-
-        if (await clientesServices.listarClientePorTelefone(telefone)) {
-            console.log("Telefone já cadastrado");
-            return res.status(409).json({
-                erro: "Telefone já cadastrado"
-            });
-        }
-
-        const cliente = await clientesServices.criarCliente({ nome, email, telefone, endereco });
+        const cliente = await services.criarCliente({
+            nome,
+            email,
+            telefone,
+            endereco
+        });
 
         return res.status(201).json({
             mensagem: "Cliente cadastrado com sucesso",
@@ -61,10 +52,26 @@ async function criarCliente(req, res) {
         });
 
     } catch (erro) {
-        console.log("Erro ao cadastrar cliente", erro);
-        return res.status(500).json({
-            erro: erro.message
-        });
+        if (erro.message === "EMAIL_JA_EXISTE") {
+            console.log(`Email ${email} já cadastrado`);
+            return res.status(409).json({
+                erro: "Email já cadastrado"
+            });
+        }
+
+        else if (erro.message === "TELEFONE_JA_EXISTE") {
+            console.log(`Telefone ${telefone} já cadastrado`);
+            return res.status(409).json({
+                erro: "Telefone já cadastrado"
+            });
+        }
+
+        else {
+            console.log("Erro ao cadastrar cliente", erro);
+            return res.status(500).json({
+                erro: erro.message
+            });
+        }
     }
 }
 
