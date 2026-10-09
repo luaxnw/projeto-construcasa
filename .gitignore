@@ -27,4 +27,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
+.editorconfig
+.gitattributes
+.yarn/
+.yarnrc.yml
+package.json
+yarn.lock
