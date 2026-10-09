@@ -1,8 +1,8 @@
 const services = require('./clientes-services');
 
-async function listarClientes(req, res) {
+async function listar(req, res) {
     try {
-        const clientes = await services.listarClientes();
+        const clientes = await services.listar();
         return res.status(200).json(clientes);
     } catch (erro) {
         console.log("Erro ao buscar clientes:", erro);
@@ -10,7 +10,7 @@ async function listarClientes(req, res) {
     }
 }
 
-async function listarClientePorID(req, res) {
+async function listarPorID(req, res) {
     try {
         const id = parseInt(req.params.id);
         if (Number.isNaN(id)) {
@@ -19,7 +19,7 @@ async function listarClientePorID(req, res) {
                 erro: "ID informado não é inteiro"
             });
         }
-        const cliente = await services.listarClientePorID(id);
+        const cliente = await services.listarPorID(id);
 
         if (!cliente) {
             console.log(`Cliente de ${id} não localizado`);
@@ -35,11 +35,11 @@ async function listarClientePorID(req, res) {
     }
 }
 
-async function criarCliente(req, res) {
+async function criar(req, res) {
     const { nome, email, telefone, endereco } = req.body;
 
     try {
-        const cliente = await services.criarCliente({
+        const cliente = await services.criar({
             nome,
             email,
             telefone,
@@ -76,7 +76,7 @@ async function criarCliente(req, res) {
 }
 
 module.exports = {
-    listarClientes,
-    listarClientePorID,
-    criarCliente
+    listar,
+    listarPorID,
+    criar
 };
