@@ -37,13 +37,19 @@ async function substituir(id, cliente) {
     );
 }
 
+async function excluir(id) {
+    return db.oneOrNone("DELETE FROM clientes WHERE id = $1 RETURNING *", 
+        [id]);
+}
+
 module.exports = {
     listar,
     listarPorID,
     listarPorEmail,
     listarPorTelefone,
     criar,
-    substituir
+    substituir,
+    excluir
 };
 
 
