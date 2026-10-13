@@ -1,3 +1,4 @@
+const { deflate } = require('node:zlib');
 const services = require('./clientes-services');
 
 async function listar(req, res) {
@@ -38,6 +39,18 @@ async function listarPorID(req, res) {
 async function criar(req, res) {
     const { nome, email, telefone, endereco } = req.body;
 
+    if (!nome || !email || !telefone || !endereco) {
+        return res.status(400).json({
+            erro: "Dados inválidos",
+            detalhes: [
+                !nome && { campo: "nome", mensagem: "Obrigatório" },
+                !email && { campo: "email", mensagem: "Obrigatório" },
+                !telefone && { campo: "telefone", mensagem: "Obrigatório" },
+                !endereco && { campo: "endereco", mensagem: "Obrigatório" },
+            ].filter(Boolean)
+        });
+    }
+
     try {
         const cliente = await services.criar({
             nome,
@@ -75,8 +88,77 @@ async function criar(req, res) {
     }
 }
 
+async function substituir(req, res) {
+    const { nome, email, telefone, endereco } = req.body;
+    const id = Number(req.params.id);
+
+    if (!Number.isInteger(id) || id <= 0) {
+        return res.status(400).json({
+            erro: "ID inválido"
+        });
+    }
+
+    if (!nome || !email || !telefone || !endereco) {
+        return res.status(400).json({
+            erro: "Dados inválidos",
+            detalhes: [
+                !nome && { campo: "nome", mensagem: "Obrigatório" },
+                !email && { campo: "email", mensagem: "Obrigatório" },
+                !telefone && { campo: "telefone", mensagem: "Obrigatório" },
+                !endereco && { campo: "endereco", mensagem: "Obrigatório" },
+            ].filter(Boolean)
+        });
+    }
+
+    try {
+        const cliente = await services.substituir(
+            id,
+            {
+                nome,
+                email,
+                telefone,
+                endereco
+            });
+
+        return res.status(200).json({
+            mensagem: "Cliente atualizado com sucesso",
+            cliente: cliente
+        });
+
+    } catch (erro) {
+        if (erro.message === "CLIENTE_NAO_EXISTE") {
+            console.log("Cliente não encontrado");
+            return res.status(404).json({
+                erro: "Cliente não econtrado"
+            });
+        }
+
+        else if (erro.message === "EMAIL_JA_EXISTE") {
+            console.log(`Email ${email} já cadastrado`);
+            return res.status(409).json({
+                erro: "Email já cadastrado"
+            });
+        }
+
+        else if (erro.message === "TELEFONE_JA_EXISTE") {
+            console.log(`Telefone ${telefone} já cadastrado`);
+            return res.status(409).json({
+                erro: "Telefone já cadastrado"
+            });
+        }
+
+        else {
+            console.log("Erro ao atualizar cliente", erro);
+            return res.status(500).json({
+                erro: erro.message
+            });
+        }
+    }
+}
+
 module.exports = {
     listar,
     listarPorID,
-    criar
+    criar,
+    substituir
 };
