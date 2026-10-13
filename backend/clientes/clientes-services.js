@@ -25,7 +25,27 @@ async function criar(cliente) {
         throw new Error("TELEFONE_JA_EXISTE");
     }
 
-    return repository.criarCliente(cliente);
+    return repository.criar(cliente);
+}
+
+async function substituir(id, cliente) {
+    if (!await listarPorID(id)) {
+        throw new Error("CLIENTE_NAO_EXISTE");
+    }
+
+    const clienteEmail = await listarPorEmail(cliente.email);
+
+    if (clienteEmail && clienteEmail.id !== id) {
+        throw new Error("EMAIL_JA_EXISTE");
+    }
+
+    const clienteTelefone = await listarPorTelefone(cliente.telefone);
+
+    if (clienteTelefone && clienteTelefone.id !== id) {
+        throw new Error("TELEFONE_JA_EXISTE");
+    }
+
+    return repository.substituir(id, cliente);
 }
 
 module.exports = {
@@ -33,5 +53,6 @@ module.exports = {
     listarPorID,
     listarPorEmail,
     listarPorTelefone,
-    criar
+    criar,
+    substituir
 };
