@@ -48,11 +48,20 @@ async function substituir(id, cliente) {
     return repository.substituir(id, cliente);
 }
 
+async function excluir(id) {
+    if (!await listarPorID(id)) {
+        throw new Error("CLIENTE_NAO_EXISTE");
+    }
+
+   return repository.excluir(id);
+}
+
 module.exports = {
     listar,
     listarPorID,
     listarPorEmail,
     listarPorTelefone,
     criar,
-    substituir
+    substituir,
+    excluir
 };
