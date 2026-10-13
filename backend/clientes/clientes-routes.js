@@ -12,4 +12,6 @@ router.post("/clientes", controller.criar);
 
 router.put("/clientes/:id", controller.substituir);
 
+router.delete("/clientes/:id", controller.excluir);
+
 module.exports = router;
