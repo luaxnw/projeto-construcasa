@@ -10,4 +10,6 @@ router.get("/clientes/:id", controller.listarPorID)
 
 router.post("/clientes", controller.criar);
 
+router.put("/clientes/:id", controller.substituir);
+
 module.exports = router;
