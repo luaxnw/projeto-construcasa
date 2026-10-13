@@ -31,5 +31,3 @@ dist-ssr
 .gitattributes
 .yarn/
 .yarnrc.yml
-package.json
-yarn.lock
