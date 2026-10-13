@@ -12,14 +12,15 @@ async function listar(req, res) {
 }
 
 async function listarPorID(req, res) {
+    const id = Number(req.params.id);
+
+    if (!Number.isInteger(id) || id <= 0) {
+        return res.status(400).json({
+            erro: "ID inválido"
+        });
+    }
+
     try {
-        const id = parseInt(req.params.id);
-        if (Number.isNaN(id)) {
-            console.log("ID informado não é inteiro");
-            return res.status(400).json({
-                erro: "ID informado não é inteiro"
-            });
-        }
         const cliente = await services.listarPorID(id);
 
         if (!cliente) {
@@ -156,9 +157,38 @@ async function substituir(req, res) {
     }
 }
 
+async function excluir(req, res) {
+    const id = Number(req.params.id);
+
+    if (!Number.isInteger(id) || id <= 0) {
+        return res.status(400).json({
+            erro: "ID inválido"
+        });
+    }
+
+    try {
+        await services.excluir(id);
+        res.status(204).send();
+    } catch (erro) {
+        if (erro.message === "CLIENTE_NAO_EXISTE") {
+            console.log("Cliente não encontrado");
+            return res.status(404).json({
+                erro: "Cliente não econtrado"
+            });
+        }
+        else {
+            console.log("Erro ao cadastrar cliente", erro);
+            return res.status(500).json({
+                erro: erro.message
+            });
+        }
+    }
+}
+
 module.exports = {
     listar,
     listarPorID,
     criar,
-    substituir
+    substituir,
+    excluir
 };
