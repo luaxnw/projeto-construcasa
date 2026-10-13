@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const PORTA = 3001;
 
+app.use(express.json());
 
 // ROTAS
 const clientesRoutes = require('./clientes/clientes-routes');
