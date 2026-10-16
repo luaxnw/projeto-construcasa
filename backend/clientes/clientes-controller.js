@@ -1,4 +1,3 @@
-const { deflate } = require('node:zlib');
 const services = require('./clientes-services');
 
 async function listar(req, res) {
