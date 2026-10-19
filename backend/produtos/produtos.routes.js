@@ -1,17 +1,17 @@
 const express = require('express');
+const controller = require('./produtos.controller');
+
 const router = express.Router();
 
-const db = require('../database');
+// ROTAS    
 
-// ROTAS
+router.get("/produtos", controller.listar);
+router.get("/produtos/:id", controller.listarPorID)
 
-router.get('/', (req, res) => {
-    res.status(200).json(db.produtos);
-});
+router.post("/produtos", controller.criar);
 
-router.get('/:id', (req, res) => {
+router.put("/produtos/:id", controller.substituir);
 
-});
+router.delete("/produtos/:id", controller.excluir);
 
 module.exports = router;
-
