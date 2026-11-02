@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS formas_pagamento (
 );
 
 CREATE TABLE IF NOT EXISTS unidades_medida (
-    id_unidade  SERIAL PRIMARY KEY,
+    id_unidade_medida  SERIAL PRIMARY KEY,
     nome        VARCHAR(50) NOT NULL UNIQUE,
     sigla       VARCHAR(10) NOT NULL UNIQUE,
     created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS itens_pedido (
     id_item_pedido  SERIAL PRIMARY KEY,
     id_pedido       INT NOT NULL REFERENCES pedidos(id_pedido),
     id_produto      INT NOT NULL REFERENCES produtos(id_produto),
-    id_unidade      INT NOT NULL REFERENCES unidades_medida(id_unidade),   
+    id_unidade_medida      INT NOT NULL REFERENCES unidades_medida(id_unidade_medida),   
     quantidade      DECIMAL(12, 3) NOT NULL,
     preco_unitario  DECIMAL(10, 2) NOT NULL,        
     subtotal        DECIMAL(12, 2) NOT NULL,        
