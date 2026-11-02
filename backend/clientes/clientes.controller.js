@@ -39,14 +39,12 @@ async function listarPorID(req, res) {
 async function criar(req, res) {
     const { nome, email, telefone, endereco } = req.body;
 
-    if (!nome || !email || !telefone || !endereco) {
+    if (!nome || !telefone) {
         return res.status(400).json({
             erro: "Dados inválidos",
             detalhes: [
                 !nome && { campo: "nome", mensagem: "Obrigatório" },
-                !email && { campo: "email", mensagem: "Obrigatório" },
-                !telefone && { campo: "telefone", mensagem: "Obrigatório" },
-                !endereco && { campo: "endereco", mensagem: "Obrigatório" },
+                !telefone && { campo: "telefone", mensagem: "Obrigatório" }
             ].filter(Boolean)
         });
     }
@@ -98,14 +96,12 @@ async function substituir(req, res) {
         });
     }
 
-    if (!nome || !email || !telefone || !endereco) {
+    if (!nome || !endereco) {
         return res.status(400).json({
             erro: "Dados inválidos",
             detalhes: [
                 !nome && { campo: "nome", mensagem: "Obrigatório" },
-                !email && { campo: "email", mensagem: "Obrigatório" },
-                !telefone && { campo: "telefone", mensagem: "Obrigatório" },
-                !endereco && { campo: "endereco", mensagem: "Obrigatório" },
+                !telefone && { campo: "telefone", mensagem: "Obrigatório" }
             ].filter(Boolean)
         });
     }
@@ -176,7 +172,7 @@ async function excluir(req, res) {
             });
         }
         else {
-            console.log("Erro ao cadastrar cliente", erro);
+            console.log("Erro ao excluir cliente", erro);
             return res.status(500).json({
                 erro: erro.message
             });

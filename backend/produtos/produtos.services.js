@@ -1,4 +1,4 @@
-const repository = require("./produtos-repository");
+const repository = require("./produtos.repository");
 
 async function listar() {
     return repository.listar();
@@ -26,7 +26,7 @@ async function substituir(id, produto) {
     const produtoNome = await listarPorNome(produto.nome);
 
     if (produtoNome && produtoNome.id !== id) {
-        throw new Error("PRODUTO_JA_EXISTE");
+        throw new Error("NOME_JA_EXISTE");
     }
 
     return repository.substituir(id, produto);
