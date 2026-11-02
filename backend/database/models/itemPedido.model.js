@@ -17,7 +17,7 @@ const ItemPedido = sequelize.define(
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        id_unidade: {
+        id_unidade_medida: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
@@ -49,11 +49,11 @@ ItemPedido.associate = (db) => {
 
     ItemPedido.belongsTo(db.Produto, {
         foreignKey: "id_produto",
-        as: "produto"
+        as: "produtos"
     });
 
     ItemPedido.belongsTo(db.UnidadeMedida, {
-        foreignKey: "id_unidade",
+        foreignKey: "id_unidade_medida",
         as: "unidades_medida"
     });
 }
