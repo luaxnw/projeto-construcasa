@@ -4,45 +4,58 @@ const sequelize = require("../connection");
 const Produto = sequelize.define(
     "Produto",
     {
-        id: {
+        id_produto: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
-            field: "id"
         },
         nome: {
-            type: DataTypes.STRING(40),
+            type: DataTypes.STRING(100),
             allowNull: false,
-            unique: true,
-            field: "nome"
         },
         descricao: {
-            type: DataTypes.STRING(255),
-            field: "descricao"
+            type: DataTypes.TEXT,
         },
-        categoria: {
-            type: DataTypes.STRING(30),
-            field: "categoria"
-        },
-        preco: {
-            type: DataTypes.NUMERIC(6,2),
+        id_categoria: {
+            type: DataTypes.INTEGER,
             allowNull: false,
-            field: "preco"
         },
-        unidade_medida: {
-            type: DataTypes.STRING(10),
-            field: "unidade_medida"
+        preco_venda: {
+            type: DataTypes.NUMERIC(10, 2),
+            allowNull: false,
         },
-        fator_conversao: {
-            type: DataTypes.STRING(10),
-            field: "fator_conversao"
+        id_unidade_medida: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
         },
-
+        ativo: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: true,
+        },
     },
     {
-        timestamps: false,
         tableName: "produtos",
+        timestamps: true,
+        underscored: true,
     },
 );
+
+Produto.associate = (db) => {
+    Produto.belongsTo(db.Categoria, {
+        foreignKey: "id_categoria",
+        as: "categorias"
+    });
+
+    Produto.belongsTo(db.UnidadeMedida, {
+        foreignKey: "id_unidade_medida",
+        as: "unidades_medida"
+    });
+
+    Produto.hasMany(db.ItemPedido, {
+        foreignKey: "id_produto",
+        as: "itens_pedido"
+    });
+}
 
 module.exports = Produto;
