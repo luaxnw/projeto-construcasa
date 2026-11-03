@@ -4,19 +4,31 @@ async function listar(req, res) {
     try {
         const medidas = await service.listar();
         return res.status(200).json(medidas);
+
     } catch (erro) {
-        console.log("erro ao buscar medidas:", erro);
         return res.status(400).json({ erro: erro.message });
     }
 }
 
 async function buscarPorId(req, res) {
+    const id = parseInt(req.params.id);
+
+    if (!Number.isInteger(id) || id <= 0)
+        return res.status(400).json({
+            erro: "ID inválido"
+        })
+
     try {
-        const id = req.params.id;
         const medida = await service.buscarPorId(id);
+
         return res.status(200).json(medida);
+
     } catch (erro) {
-        console.log("erro ao buscar medida:", erro);
+        if (erro.message === "MEDIDA_NAO_EXISTE")
+            return res.status(404).json({
+                erro: `Medida de ID ${id} não existe`
+            });
+
         return res.status(500).json({ erro: erro.message });
     }
 }
@@ -28,10 +40,16 @@ async function buscarPorNome(req, res) {
             return res.status(400)
                 .json({ nome: "obrigatório" });
         }
+
         const medida = await service.buscarPorNome(nome);
         return res.status(200).json(medida);
+
     } catch (erro) {
-        console.log("erro ao buscar medida:", erro);
+        if (erro.message === "MEDIDA_NAO_EXISTE")
+            return res.status(404).json({
+                erro: `Medida de nome ${nome} não existe`
+            });
+
         return res.status(500).json({ erro: erro.message });
     }
 }
@@ -63,7 +81,7 @@ async function criar(req, res) {
     } catch (erro) {
         if (erro.message === "MEDIDA_JA_EXISTE")
             return res.status(409).json({
-                erro: "Medida já cadastrada"
+                erro: "Medida já cadastrada no sistema. Medida não salva"
             });
 
         return res.status(500).json({
@@ -130,7 +148,9 @@ async function deletar(req, res) {
 
     try {
         await service.deletar(id);
+
         return res.status(204).send();
+
     } catch (erro) {
         if (erro.message === "MEDIDA_NAO_EXISTE")
             return res.status(404).json({
