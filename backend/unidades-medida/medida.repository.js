@@ -5,13 +5,21 @@ async function listar() {
 }
 
 async function listarPorId(id) {
-    return UnidadeMedida.findByPk(id);
+    const unidadeMedida = UnidadeMedida.findByPk(id);
+    if (!unidadeMedida)
+        return null
+
+    return unidadeMedida;
 }
 
 async function buscarPorNome(nome) {
-    return UnidadeMedida.findOne({ 
+    const unidadeMedida = UnidadeMedida.findOne({ 
         where: { nome: nome } 
     });
+    if (!unidadeMedida)
+        return null;
+
+    return unidadeMedida;
 }
 
 async function criar(dados) {
@@ -20,13 +28,17 @@ async function criar(dados) {
 
 async function atualizar(id, dados) {
     const UnidadeMedida = await UnidadeMedida.findByPk(id);
-    if (!UnidadeMedida) return null;
+    if (!UnidadeMedida) 
+        return null;
+    
     return UnidadeMedida.update(dados);
 }
 
 async function deletar(id) {
     const UnidadeMedida = await UnidadeMedida.findByPk(id);
-    if (!UnidadeMedida) return null;
+    if (!UnidadeMedida)
+        return null;
+
     await UnidadeMedida.destroy();
     return UnidadeMedida;
 }
