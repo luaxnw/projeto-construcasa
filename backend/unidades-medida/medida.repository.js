@@ -27,20 +27,20 @@ async function criar(dados) {
 }
 
 async function atualizar(id, dados) {
-    const UnidadeMedida = await UnidadeMedida.findByPk(id);
-    if (!UnidadeMedida) 
+    const unidadeMedida = await UnidadeMedida.findByPk(id);
+    if (!unidadeMedida) 
         return null;
     
     return UnidadeMedida.update(dados);
 }
 
 async function deletar(id) {
-    const UnidadeMedida = await UnidadeMedida.findByPk(id);
-    if (!UnidadeMedida)
+    const unidadeMedida = await UnidadeMedida.findByPk(id);
+    if (!unidadeMedida)
         return null;
 
     await UnidadeMedida.destroy();
-    return UnidadeMedida;
+    return unidadeMedida;
 }
 
 module.exports = {

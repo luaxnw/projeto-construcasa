@@ -5,11 +5,19 @@ async function listar() {
 }
 
 async function buscarPorId(id) {
-    return repository.buscarPorId(id);
+    const medida = await repository.buscarPorId(id);
+    if (!medida)
+        throw new Error("MEDIDA_NAO_EXISTE");
+    
+    return medida;
 }
 
 async function buscarPorNome(nome) {
-    return repository.buscarPorNome(nome);
+    const medida = await repository.buscarPorNome(nome);
+    if (!medida)
+        throw new Error("MEDIDA_NAO_EXISTE");
+
+    return medida;
 }
 
 async function criar(unidadeMedida) {
@@ -20,22 +28,24 @@ async function criar(unidadeMedida) {
 }
 
 async function atualizar(id, unidadeMedida) {
-    if (!await buscarPorId(id))
+    const medida = await repository.atualizar(id, unidadeMedida);
+    if (!medida)
         throw new Error("MEDIDA_NAO_EXISTE");
 
     const unidadeMedidaNome = await buscarPorNome(unidadeMedida.nome);
 
-    if (unidadeMedida && unidadeMedida.id !== id)
+    if (unidadeMedidaNome && unidadeMedidaNome.id !== id)
         throw new Error("MEDIDA_JA_EXISTE");
 
-    return repository.atualizar(id, unidadeMedida);
+    return medida;
 }
 
 async function deletar(id) {
-    if (!await buscarPorId(id))
+    const emprestimoDeletado = await repository.deletar(id);
+    if (!emprestimoDeletado)
         throw new Error("MEDIDA_NAO_EXISTE");
 
-    return repository.deletar(id);
+    return emprestimoDeletado;
 }
 
 module.exports = {
