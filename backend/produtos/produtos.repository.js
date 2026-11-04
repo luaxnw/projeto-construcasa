@@ -4,16 +4,16 @@ async function listar() {
     return Produto.findAll({ order: [["nome", "ASC"]] });
 }
 
-async function listarPorId(id) {
-    const produto = Produto.findByPk(id);
+async function listarPorID(id) {
+    const produto = await Produto.findByPk(id);
     if (!produto)
         return null
 
     return produto;
 }
 
-async function buscarPorNome(nome) {
-    const produto = Produto.findOne({ 
+async function listarPorNome(nome) {
+    const produto = await Produto.findOne({
         where: { nome: nome } 
     });
     if (!produto)
@@ -26,28 +26,28 @@ async function criar(dados) {
     return Produto.create(dados);
 }
 
-async function atualizar(id, dados) {
+async function substituir(id, dados) {
     const produto = await Produto.findByPk(id);
     if (!produto) 
         return null;
     
-    return Produto.update(dados);
+    return produto.update(dados);
 }
 
-async function deletar(id) {
+async function excluir(id) {
     const produto = await Produto.findByPk(id);
     if (!produto)
         return null;
 
-    await Produto.destroy();
+    await produto.destroy();
     return produto;
 }
 
 module.exports = {
     listar,
-    listarPorId,
-    buscarPorNome,
+    listarPorID,
+    listarPorNome,
     criar,
-    atualizar,
-    deletar
+    substituir,
+    excluir
 };
