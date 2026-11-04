@@ -25,17 +25,15 @@ async function substituir(id, produto) {
 
     const produtoNome = await listarPorNome(produto.nome);
 
-    if (produtoNome && produtoNome.id !== id) {
+    if (produtoNome && produtoNome.id_produto !== id)
         throw new Error("NOME_JA_EXISTE");
-    }
 
     return repository.substituir(id, produto);
 }
 
 async function excluir(id) {
-    if (!await listarPorID(id)) {
+    if (!await listarPorID(id))
         throw new Error("PRODUTO_NAO_EXISTE");
-    }
 
     return repository.excluir(id);
 }
