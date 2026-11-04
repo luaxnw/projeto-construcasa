@@ -4,45 +4,44 @@ const sequelize = require("../connection");
 const Cliente = sequelize.define(
     "Cliente",
     {
-        id: {
+        id_cliente: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
-            field: "id"
         },
         nome: {
-            type: DataTypes.STRING(40),
+            type: DataTypes.STRING(100),
             allowNull: false,
-            field: "nome"
         },
-        cpf: {
-            type: DataTypes.STRING(11),
-            allowNull: true,
+        cpf_cnpj: {
+            type: DataTypes.STRING(14),
             unique: true,
-            field: "cpf"
         },
         email: {
-            type: DataTypes.STRING(40),
-            allowNull: true,
+            type: DataTypes.STRING(100),
             unique: true,
-            field: "email"
         },
         telefone: {
             type: DataTypes.STRING(20),
-            allowNull: true,
+            allowNull: false,
             unique: true,
-            field: "telefone"
         },
-        endereco: {
-            type: DataTypes.STRING(50),
-            allowNull: true,
-            field: "endereco"
+        id_endereco: {
+            type: DataTypes.INTEGER
         },
     },
     {
-        timestamps: false,
         tableName: "clientes",
+        timestamps: false,
+        underscored: true
     },
 );
+
+Cliente.associate = (db) => {
+    Cliente.belongsTo(db.Endereco, {
+        foreignKey: "id_endereco",
+        as: "enderecos"
+    });
+}
 
 module.exports = Cliente;
