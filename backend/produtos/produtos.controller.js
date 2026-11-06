@@ -12,7 +12,7 @@ async function listar(req, res) {
     }
 }
 
-async function listarPorID(req, res) {
+async function buscarPorId(req, res) {
     const id = Number(req.params.id);
 
     if (!Number.isInteger(id) || id <= 0) {
@@ -22,16 +22,38 @@ async function listarPorID(req, res) {
     }
 
     try {
-        const produto = await services.listarPorID(id);
+        const produto = await services.buscarPorId(id);
 
-        if (!produto) {
-            return res.status(404).json({
-                erro: `Produto de ID ${id} não existe`
-            });
+        return res.status(200).json(produto);
+
+    } catch (erro) {
+        if (erro.message === "PRODUTO_NAO_EXISTE") {
+            return res.status(404).
+            json({erro: `Produto de ID ${id} não existe`});
         }
+
+        console.log("Erro ao buscar produto:", erro);
+        return res.status(500).json({ erro: erro.message });
+    }
+}
+
+async function buscarPorNome(req, res) {
+    const { nome } = req.body;
+
+    if (!nome)
+        return res.status(400).
+            json({ campo: "nome", mensagem: "Obrigatório" });
+
+    try {
+        const produto = await services.buscarPorNome(nome);
 
         return res.status(200).json(produto);
     } catch (erro) {
+        if (erro.message === "PRODUTO_NAO_EXISTE") {
+            return res.status(404).
+            json({erro: `Produto de nome ${nome} não existe`});
+        }
+
         console.log("Erro ao buscar produto:", erro);
         return res.status(500).json({ erro: erro.message });
     }
@@ -47,7 +69,7 @@ async function criar(req, res) {
         ativo
     } = req.body;
 
-    if (!nome || (id_categoria === undefined || id_categoria < 0) || (preco_venda === undefined || preco_venda < 0 ) 
+    if (!nome || (id_categoria === undefined || id_categoria < 0) || (preco_venda === undefined || preco_venda < 0)
         || (id_unidade_medida === undefined || id_unidade_medida < 0)) {
         return res.status(400).json({
             erro: "Dados inválidos",
@@ -106,7 +128,7 @@ async function substituir(req, res) {
         });
     }
 
-    if (!nome || (id_categoria === undefined || id_categoria < 0) || (preco_venda === undefined || preco_venda < 0 ) 
+    if (!nome || (id_categoria === undefined || id_categoria < 0) || (preco_venda === undefined || preco_venda < 0)
         || (id_unidade_medida === undefined || id_unidade_medida < 0)) {
         return res.status(400).json({
             erro: "Dados inválidos",
@@ -181,7 +203,8 @@ async function excluir(req, res) {
 
 module.exports = {
     listar,
-    listarPorID,
+    buscarPorId,
+    buscarPorNome,
     criar,
     substituir,
     excluir
