@@ -4,7 +4,7 @@ async function listar() {
     return Produto.findAll({ order: [["nome", "ASC"]] });
 }
 
-async function listarPorID(id) {
+async function buscarPorId(id) {
     const produto = await Produto.findByPk(id);
     if (!produto)
         return null
@@ -12,9 +12,9 @@ async function listarPorID(id) {
     return produto;
 }
 
-async function listarPorNome(nome) {
+async function buscarPorNome(nome) {
     const produto = await Produto.findOne({
-        where: { nome: nome } 
+        where: { nome: nome }
     });
     if (!produto)
         return null;
@@ -28,10 +28,13 @@ async function criar(dados) {
 
 async function substituir(id, dados) {
     const produto = await Produto.findByPk(id);
-    if (!produto) 
-        return null;
     
-    return produto.update(dados);
+    if (!produto)
+        return null;
+
+    await produto.update(dados);
+
+    return produto;
 }
 
 async function excluir(id) {
@@ -45,8 +48,8 @@ async function excluir(id) {
 
 module.exports = {
     listar,
-    listarPorID,
-    listarPorNome,
+    buscarPorId,
+    buscarPorNome,
     criar,
     substituir,
     excluir
