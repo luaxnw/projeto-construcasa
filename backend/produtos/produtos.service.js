@@ -4,35 +4,47 @@ async function listar() {
     return repository.listar();
 }
 
-async function listarPorID(id) {
-    return repository.listarPorID(id);
+async function buscarPorId(id) {
+    const produto = await repository.buscarPorId(id);
+
+    if (!produto)
+        throw new Error("PRODUTO_NAO_EXISTE");
+
+    return produto;
 }
 
-async function listarPorNome(nome) {
-    return repository.listarPorNome(nome);
+async function buscarPorNome(nome) {
+    const produto = await repository.buscarPorNome(nome);
+
+    if (!produto)
+        throw new Error("PRODUTO_NAO_EXISTE");
+
+    return produto;
 }
 
 async function criar(produto) {
-    if (await listarPorNome(produto.nome))
+    if (await buscarPorNome(produto.nome))
         throw new Error("PRODUTO_JA_EXISTE");
 
     return repository.criar(produto);
 }
 
 async function substituir(id, produto) {
-    if (!await listarPorID(id))
+    const produtoRet = await repository.substituir(id, produto);
+
+    if (!produtoRet)
         throw new Error("PRODUTO_NAO_EXISTE");
 
-    const produtoNome = await listarPorNome(produto.nome);
+    const produtoNome = await buscarPorNome(produto.nome);
 
     if (produtoNome && produtoNome.id_produto !== id)
         throw new Error("NOME_JA_EXISTE");
 
-    return repository.substituir(id, produto);
+    return produtoRet;
 }
 
 async function excluir(id) {
-    if (!await listarPorID(id))
+    if (!await buscarPorId(id))
         throw new Error("PRODUTO_NAO_EXISTE");
 
     return repository.excluir(id);
@@ -40,8 +52,8 @@ async function excluir(id) {
 
 module.exports = {
     listar,
-    listarPorID,
-    listarPorNome,
+    buscarPorId,
+    buscarPorNome,
     criar,
     substituir,
     excluir
