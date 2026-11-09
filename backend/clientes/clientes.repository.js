@@ -1,55 +1,56 @@
-const db = require('../database/database');
+const { Cliente } = require("../database/models");
 
 async function listar() {
-    return db.any("SELECT * FROM clientes ORDER BY nome");
+    return Cliente.findAll({
+        order: [["nome", "ASC"]]
+    });
 }
 
-async function listarPorID(id) {
-    return db.oneOrNone("SELECT * FROM clientes WHERE id = $1", [id]);
+async function buscarPorId(id) {
+    return Cliente.findByPk(id);
 }
 
-async function listarPorEmail(email) {
-    return db.oneOrNone("SELECT * FROM clientes WHERE email = $1", [email]);
+async function buscarPorEmail(email) {
+    return Cliente.findOne({
+        where: { email }
+    });
 }
 
-async function listarPorTelefone(telefone) {
-    return db.oneOrNone("SELECT * FROM clientes WHERE telefone = $1", [telefone]);
+async function buscarPorTelefone(telefone) {
+    return Cliente.findOne({
+        where: { telefone }
+    });
 }
 
-async function criar(cliente) {
-    return db.one(
-        `INSERT INTO clientes (nome, email, telefone, endereco)
-        VALUES ($1, $2, $3, $4)
-        RETURNING *`,
-        [cliente.nome, cliente.email, cliente.telefone, cliente.endereco]
-    );
+async function buscarPorCpf(cpf) {
+    return Cliente.findOne({
+        where: { cpf }
+    });
 }
 
-async function substituir(id, cliente) {
-    return db.oneOrNone(`UPDATE clientes
-        SET nome = $1, 
-            email = $2,
-            telefone = $3, 
-            endereco = $4
-        WHERE id = $5 
-        RETURNING *`,
-        [cliente.nome, cliente.email, cliente.telefone, cliente.endereco, id]
-    );
+async function criar(dados) {
+    return Cliente.create(dados);
+}
+
+async function substituir(id, dados) {
+    return Cliente.update(dados, {
+        where: { id_cliente: id }
+    });
 }
 
 async function excluir(id) {
-    return db.oneOrNone("DELETE FROM clientes WHERE id = $1 RETURNING *", 
-        [id]);
+    return Cliente.destroy({
+        where: { id_cliente: id }
+    });
 }
 
 module.exports = {
     listar,
-    listarPorID,
-    listarPorEmail,
-    listarPorTelefone,
+    buscarPorId,
+    buscarPorCpf,
+    buscarPorEmail,
+    buscarPorTelefone,
     criar,
     substituir,
     excluir
 };
-
-
