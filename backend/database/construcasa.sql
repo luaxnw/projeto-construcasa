@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS pedidos (
     id_pedido            SERIAL PRIMARY KEY,
     id_cliente           INT NOT NULL REFERENCES clientes(id_cliente),
     id_funcionario       INT NOT NULL REFERENCES funcionarios(id_funcionario), 
-    id_forma_pagamento   INT NOT NULL REFERENCES formas_pagamento(id_forma_pagamento),
+    forma_pagamento      VARCHAR(15) NOT NULL DEFAULT 'pix', 
     tipo_entrega         VARCHAR(10) NOT NULL DEFAULT 'retirada',
     id_endereco_entrega  INT REFERENCES enderecos(id_endereco),
     status_pagamento     VARCHAR(25) NOT NULL DEFAULT 'aguardando_pagamento',
@@ -114,7 +114,6 @@ CREATE TABLE IF NOT EXISTS pedidos (
     status_pedido        VARCHAR(15) NOT NULL DEFAULT 'em_aberto',
     valor_total          DECIMAL(12, 2) NOT NULL DEFAULT 0,   
     observacoes          TEXT,
-    data_pedido          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     created_at           TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at           TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
