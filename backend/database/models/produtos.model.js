@@ -42,10 +42,10 @@ const Produto = sequelize.define(
 );
 
 Produto.associate = (db) => {
-    Produto.belongsTo(db.Categoria, {
-        foreignKey: "id_categoria",
-        as: "categorias"
-    });
+    //Produto.belongsTo(db.Categoria, {
+    //    foreignKey: "id_categoria",
+    //    as: "categorias"
+    //});
 
     Produto.belongsTo(db.UnidadeMedida, {
         foreignKey: "id_unidade_medida",
