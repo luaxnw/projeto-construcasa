@@ -10,9 +10,11 @@ const clientesRoutes = require('./clientes/clientes.routes');
 //const estoqueRouter = require('./estoque/estoque-routes');
 const produtosRouter = require('./produtos/produtos.routes');
 //const pedidosRouter = require('./pedidos/pedidos-routes');
+const medidasRouter = require('./unidades-medida/unidade.routes');
 
-app.use(clientesRoutes);
+//app.use(clientesRoutes);
 app.use(produtosRouter);
+app.use(medidasRouter);
 
 app.listen(PORTA, () => {
     console.log(`Servidor rodando em http://localhost:${PORTA}`);
