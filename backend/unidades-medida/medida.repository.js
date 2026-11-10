@@ -1,53 +1,52 @@
 const { UnidadeMedida } = require("../database/models");
 
 async function listar() {
-    return UnidadeMedida.findAll({ order: [["nome", "ASC"]] });
+    return UnidadeMedida.findAll({
+        order: [["nome", "ASC"]]
+    });
 }
 
-async function listarPorId(id) {
-    const unidadeMedida = UnidadeMedida.findByPk(id);
-    if (!unidadeMedida)
-        return null
-
-    return unidadeMedida;
+async function buscarPorId(id) {
+    return UnidadeMedida.findByPk(id);
 }
 
 async function buscarPorNome(nome) {
-    const unidadeMedida = UnidadeMedida.findOne({ 
-        where: { nome: nome } 
+    return UnidadeMedida.findOne({
+        where: { nome }
     });
-    if (!unidadeMedida)
-        return null;
-
-    return unidadeMedida;
 }
 
 async function criar(dados) {
     return UnidadeMedida.create(dados);
 }
 
-async function atualizar(id, dados) {
+async function substituir(id, dados) {
     const unidadeMedida = await UnidadeMedida.findByPk(id);
-    if (!unidadeMedida) 
-        return null;
-    
-    return UnidadeMedida.update(dados);
-}
 
-async function deletar(id) {
-    const unidadeMedida = await UnidadeMedida.findByPk(id);
     if (!unidadeMedida)
         return null;
 
-    await UnidadeMedida.destroy();
+    await unidadeMedida.update(dados);
+
+    return unidadeMedida;
+}
+
+async function excluir(id) {
+    const unidadeMedida = await UnidadeMedida.findByPk(id);
+
+    if (!unidadeMedida)
+        return null;
+
+    await unidadeMedida.destroy();
+
     return unidadeMedida;
 }
 
 module.exports = {
     listar,
-    listarPorId,
+    buscarPorId,
     buscarPorNome,
     criar,
-    atualizar,
-    deletar
+    substituir,
+    excluir
 };

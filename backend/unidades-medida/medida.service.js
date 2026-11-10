@@ -1,4 +1,4 @@
-const repository = require('./medida.repository');
+const repository = require("./medida.repository");
 
 async function listar() {
     return repository.listar();
@@ -6,14 +6,16 @@ async function listar() {
 
 async function buscarPorId(id) {
     const medida = await repository.buscarPorId(id);
+
     if (!medida)
         throw new Error("MEDIDA_NAO_EXISTE");
-    
+
     return medida;
 }
 
 async function buscarPorNome(nome) {
     const medida = await repository.buscarPorNome(nome);
+
     if (!medida)
         throw new Error("MEDIDA_NAO_EXISTE");
 
@@ -21,31 +23,35 @@ async function buscarPorNome(nome) {
 }
 
 async function criar(unidadeMedida) {
-    if (await buscarPorNome(unidadeMedida.nome))
+    const medidaExistente = await repository.buscarPorNome(unidadeMedida.nome);
+
+    if (medidaExistente)
         throw new Error("MEDIDA_JA_EXISTE");
 
     return repository.criar(unidadeMedida);
 }
 
-async function atualizar(id, unidadeMedida) {
-    const medida = await repository.atualizar(id, unidadeMedida);
-    if (!medida)
-        throw new Error("MEDIDA_NAO_EXISTE");
+async function substituir(id, unidadeMedida) {
+    const medidaExistente = await repository.buscarPorNome(unidadeMedida.nome);
 
-    const unidadeMedidaNome = await buscarPorNome(unidadeMedida.nome);
-
-    if (unidadeMedidaNome && unidadeMedidaNome.id !== id)
+    if (medidaExistente && medidaExistente.id !== Number(id))
         throw new Error("MEDIDA_JA_EXISTE");
 
-    return medida;
-}
+    const medidaAtualizada = await repository.substituir(id, unidadeMedida);
 
-async function deletar(id) {
-    const emprestimoDeletado = await repository.deletar(id);
-    if (!emprestimoDeletado)
+    if (!medidaAtualizada)
         throw new Error("MEDIDA_NAO_EXISTE");
 
-    return emprestimoDeletado;
+    return medidaAtualizada;
+}
+
+async function excluir(id) {
+    const medidaDeletada = await repository.excluir(id);
+
+    if (!medidaDeletada)
+        throw new Error("MEDIDA_NAO_EXISTE");
+
+    return medidaDeletada;
 }
 
 module.exports = {
@@ -53,6 +59,6 @@ module.exports = {
     buscarPorId,
     buscarPorNome,
     criar,
-    atualizar,
-    deletar
+    substituir,
+    excluir
 };
