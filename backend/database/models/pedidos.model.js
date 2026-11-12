@@ -47,7 +47,7 @@ const Pedido = sequelize.define(
             default: 'em_aberto'
         },
         valor_total: {
-            type: DataTypes.DECIMAL(12,2),
+            type: DataTypes.DECIMAL(12, 2),
             allowNull: false,
             default: 0
         },
@@ -68,10 +68,10 @@ Pedido.associate = (db) => {
         as: "clientes"
     });
 
-    //Pedido.belongsTo(db.Funcionario, {
-    //    foreignKey: "id_funcionario",
-    //    as: "funcionarios"
-   // });
+    Pedido.belongsTo(db.Funcionario, {
+        foreignKey: "id_funcionario",
+        as: "funcionarios"
+    });
 
     Pedido.belongsTo(db.Endereco, {
         foreignKey: "id_endereco_entrega",
