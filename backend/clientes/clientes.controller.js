@@ -1,4 +1,4 @@
-const services = require('./clientes-services');
+const services = require('./clientes.service');
 
 async function listar(req, res) {
     try {

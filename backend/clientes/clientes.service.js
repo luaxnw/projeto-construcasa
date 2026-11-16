@@ -1,4 +1,4 @@
-const repository = require('./clientes-repository');
+const repository = require('./clientes.repository');
 
 async function listar() {
     return repository.listar();

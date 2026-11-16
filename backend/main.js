@@ -11,10 +11,12 @@ const clientesRoutes = require('./clientes/clientes.routes');
 const produtosRouter = require('./produtos/produtos.routes');
 //const pedidosRouter = require('./pedidos/pedidos-routes');
 const medidasRouter = require('./unidades-medida/unidade.routes');
+//const funcionariosRoutes = require('./funcionarios/funcionarios-routes');
 
-//app.use(clientesRoutes);
+app.use(clientesRoutes);
 app.use(produtosRouter);
 app.use(medidasRouter);
+//app.use(funcionariosRoutes);
 
 app.listen(PORTA, () => {
     console.log(`Servidor rodando em http://localhost:${PORTA}`);
