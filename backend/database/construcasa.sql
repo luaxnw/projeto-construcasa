@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS produtos (
     descricao          TEXT,
     id_categoria       INT NOT NULL REFERENCES categorias(id_categoria),
     preco_venda        DECIMAL(10, 2) NOT NULL,        
-    id_unidade_medida  INT NOT NULL REFERENCES unidades_medida(id_unidade),
+    id_unidade_medida  INT NOT NULL REFERENCES unidades_medida(id_unidade_medida),
     qtd_estoque        INT NOT NULL DEFAULT 0,
     ativo              BOOLEAN NOT NULL DEFAULT TRUE,
     created_at         TIMESTAMPTZ NOT NULL DEFAULT NOW(),
