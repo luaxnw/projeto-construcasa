@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Input from "frontend/src/components/Input.jsx"
+import Input from "../../components/Input.jsx";
 import Button from "@mui/material/Button";
 import "./Login.css";
 

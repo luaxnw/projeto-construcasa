@@ -8,6 +8,7 @@
     "dev": "nodemon main.js"
   },
   "dependencies": {
+    "cors": "^2.8.6",
     "express": "^5.3.0",
     "pg": "^8.23.1",
     "pg-hstore": "^2.3.4",
