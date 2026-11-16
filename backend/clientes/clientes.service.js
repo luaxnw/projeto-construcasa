@@ -17,7 +17,7 @@ async function listarPorTelefone(telefone) {
 }
 
 async function criar(cliente) {
-    if (await listarPorEmail(cliente.email)) {
+    if (cliente.email && await listarPorEmail(cliente.email)) {
         throw new Error("EMAIL_JA_EXISTE");
     }
 

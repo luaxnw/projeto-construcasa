@@ -37,7 +37,7 @@ async function listarPorID(req, res) {
 }
 
 async function criar(req, res) {
-    const { nome, email, telefone, endereco } = req.body;
+    const { nome, cpf_cnpj, email, telefone, endereco } = req.body;
 
     if (!nome || !telefone) {
         return res.status(400).json({
@@ -52,6 +52,7 @@ async function criar(req, res) {
     try {
         const cliente = await services.criar({
             nome,
+            cpf_cnpj,
             email,
             telefone,
             endereco
@@ -64,25 +65,21 @@ async function criar(req, res) {
 
     } catch (erro) {
         if (erro.message === "EMAIL_JA_EXISTE") {
-            console.log(`Email ${email} já cadastrado`);
-            return res.status(409).json({
-                erro: "Email já cadastrado"
-            });
+            return res.status(409).json({ erro: "Email já cadastrado" });
         }
 
-        else if (erro.message === "TELEFONE_JA_EXISTE") {
-            console.log(`Telefone ${telefone} já cadastrado`);
-            return res.status(409).json({
-                erro: "Telefone já cadastrado"
-            });
+        if (erro.message === "TELEFONE_JA_EXISTE") {
+            return res.status(409).json({ erro: "Telefone já cadastrado" });
         }
 
-        else {
-            console.log("Erro ao cadastrar cliente", erro);
-            return res.status(500).json({
-                erro: erro.message
-            });
+        if (erro.name === "SequelizeUniqueConstraintError") {
+            return res.status(409).json({ erro: "CPF/CNPJ já cadastrado" });
         }
+
+        console.log("Erro ao cadastrar cliente", erro);
+        return res.status(500).json({
+            erro: "Não foi possível cadastrar o cliente. Tente novamente."
+        });
     }
 }
 
