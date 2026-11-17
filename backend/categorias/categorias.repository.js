@@ -1,4 +1,4 @@
-const { Categoria } = require("../database/models");
+const { Categoria, Sequelize } = require("../database/models");
 
 async function listar() {
     return Categoria.findAll({ order: [["nome", "ASC"]] });
@@ -9,7 +9,12 @@ async function buscarPorId(id) {
 }
 
 async function buscarPorNome(nome) {
-    return Categoria.findOne({ where: { nome } });
+    return Categoria.findOne({
+        where: Sequelize.where(
+            Sequelize.fn("lower", Sequelize.col("nome")),
+            Sequelize.fn("lower", nome)
+        ),
+    });
 }
 
 async function criar(dados) {
