@@ -141,4 +141,20 @@ CREATE TABLE IF NOT EXISTS entregas (
     updated_at     TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+INSERT INTO unidades_medida (nome, sigla) VALUES
+    ('Unidade', 'un'),
+    ('Quilograma', 'kg'),
+    ('Saco', 'sc'),
+    ('Metro', 'm'),
+    ('Metro quadrado', 'm²'),
+    ('Metro cúbico', 'm³'),
+    ('Litro', 'l'),
+    ('Lata', 'lt'),
+    ('Galão', 'gl'),
+    ('Caixa', 'cx'),
+    ('Barra', 'br'),
+    ('Rolo', 'rl'),
+    ('Pacote', 'pct')
+ON CONFLICT (nome) DO NOTHING;
+
 COMMIT;
