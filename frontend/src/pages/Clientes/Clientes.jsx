@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Form } from "react-bootstrap";
+import { Button, Dropdown, Form } from "react-bootstrap";
 
 const API = "http://localhost:3001";
 
@@ -21,6 +21,27 @@ export default function Clientes() {
         setErro("Não foi possível carregar os clientes. Verifique se o servidor está ligado.")
       );
   }, []);
+
+  async function excluir(cliente) {
+    if (!window.confirm(`Excluir o cliente "${cliente.nome}"?`)) return;
+
+    try {
+      const resp = await fetch(`${API}/clientes/${cliente.id_cliente}`, {
+        method: "DELETE",
+      });
+      if (!resp.ok) throw new Error();
+      setClientes((atuais) =>
+        atuais.filter((c) => c.id_cliente !== cliente.id_cliente)
+      );
+      setErro("");
+    } catch {
+      setErro("Não foi possível excluir o cliente.");
+    }
+  }
+
+  function editar(cliente) {
+    navigate(`/clientes/${cliente.id_cliente}/editar`);
+  }
 
   const agora = new Date();
   const doMes = clientes.filter((c) => {
@@ -68,16 +89,35 @@ export default function Clientes() {
         </Button>
       </div>
 
-      {erro && <div className="text-danger">{erro}</div>}
+      {erro && <div className="text-danger mb-2">{erro}</div>}
       {!erro && filtrados.length === 0 && <div>Nenhum cliente encontrado.</div>}
 
       {filtrados.map((c) => (
-        <div key={c.id_cliente} className="card-cc p-3 mb-2">
-          <div className="fs-5 fw-bold">{c.nome}</div>
-          <div className="small">
-            {c.telefone}
-            {c.cpf_cnpj ? " · CPF/CNPJ informado" : ""}
+        <div
+          key={c.id_cliente}
+          className="card-cc p-3 mb-2 d-flex justify-content-between align-items-start"
+        >
+          <div>
+            <div className="fs-5 fw-bold">{c.nome}</div>
+            <div className="small">
+              {c.telefone}
+              {c.cpf_cnpj ? " · CPF/CNPJ informado" : ""}
+            </div>
           </div>
+
+          <Dropdown align="end">
+            <Dropdown.Toggle
+              variant="link"
+              className="menu-pontos text-white text-decoration-none p-0"
+            >
+              •••
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={() => editar(c)}>Editar</Dropdown.Item>
+              <Dropdown.Item onClick={() => excluir(c)}>Excluir</Dropdown.Item>
+              <Dropdown.Item>Fechar</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
         </div>
       ))}
     </div>

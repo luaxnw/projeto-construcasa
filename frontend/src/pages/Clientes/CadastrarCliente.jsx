@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { Button, Form, Row, Col } from "react-bootstrap";
 
 const API = "http://localhost:3001";
@@ -16,9 +16,37 @@ function vazioParaNull(valor) {
 
 export default function CadastrarCliente() {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const editando = Boolean(id);
+
   const [form, setForm] = useState(VAZIO);
   const [erro, setErro] = useState("");
   const [salvando, setSalvando] = useState(false);
+
+  useEffect(() => {
+    if (!editando) return;
+
+    fetch(`${API}/clientes/${id}`)
+      .then((r) => {
+        if (!r.ok) throw new Error();
+        return r.json();
+      })
+      .then((c) => {
+        setForm({
+          nome: c.nome ?? "",
+          telefone: c.telefone ?? "",
+          cpf_cnpj: c.cpf_cnpj ?? "",
+          email: c.email ?? "",
+          rua: c.endereco?.rua ?? "",
+          numero: c.endereco?.numero ?? "",
+          bairro: c.endereco?.bairro ?? "",
+          complemento: c.endereco?.complemento ?? "",
+          cidade: c.endereco?.cidade ?? "",
+          uf: "",
+        });
+      })
+      .catch(() => setErro("Não foi possível carregar os dados do cliente."));
+  }, [id, editando]);
 
   function alterar(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -43,23 +71,26 @@ export default function CadastrarCliente() {
       email: vazioParaNull(form.email),
       endereco: temEndereco
         ? {
-          rua: form.rua.trim(),
-          numero: form.numero.trim(),
-          bairro: form.bairro.trim(),
-          cidade: form.cidade.trim(),
-          complemento: vazioParaNull(form.complemento),
-        }
+            rua: form.rua.trim(),
+            numero: form.numero.trim(),
+            bairro: form.bairro.trim(),
+            cidade: form.cidade.trim(),
+            complemento: vazioParaNull(form.complemento),
+          }
         : null,
     };
 
     setErro("");
     setSalvando(true);
     try {
-      const resp = await fetch(`${API}/clientes`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(dados),
-      });
+      const resp = await fetch(
+        editando ? `${API}/clientes/${id}` : `${API}/clientes`,
+        {
+          method: editando ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(dados),
+        }
+      );
       if (!resp.ok) {
         const retorno = await resp.json().catch(() => ({}));
         throw new Error(retorno.erro || "Não foi possível salvar o cliente.");
@@ -74,7 +105,7 @@ export default function CadastrarCliente() {
 
   return (
     <div>
-      <h2>Cadastrar cliente</h2>
+      <h2>{editando ? "Editar cliente" : "Cadastrar cliente"}</h2>
 
       <div className="card-cc p-3 my-3">
         <Row className="g-3">
@@ -131,7 +162,7 @@ export default function CadastrarCliente() {
           Cancelar
         </Button>
         <Button variant="danger" onClick={salvar} disabled={salvando}>
-          {salvando ? "Salvando..." : "Salvar Cliente"}
+          {salvando ? "Salvando..." : editando ? "Salvar alterações" : "Salvar Cliente"}
         </Button>
       </div>
     </div>

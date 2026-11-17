@@ -1,3 +1,4 @@
 .sidebar { width: 220px; background: #0c0c10; }
 .sidebar .nav-link { color: #fff; }
 .sidebar .nav-link.active { background: #d32525; color: #fff; }
+.menu-pontos::after { display: none; }
