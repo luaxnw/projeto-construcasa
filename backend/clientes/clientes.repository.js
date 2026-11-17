@@ -8,7 +8,17 @@ async function listar() {
 }
 
 async function buscarPorId(id) {
-    return Cliente.findByPk(id);
+    const cliente = await Cliente.findByPk(id);
+    if (!cliente) return null;
+
+    const endereco = cliente.id_endereco
+        ? await Endereco.findByPk(cliente.id_endereco)
+        : null;
+
+    return {
+        ...cliente.toJSON(),
+        endereco: endereco ? endereco.toJSON() : null
+    };
 }
 
 async function buscarPorEmail(email) {
@@ -42,9 +52,26 @@ async function criar({ endereco, ...dados }) {
     });
 }
 
-async function substituir(id, dados) {
-    return Cliente.update(dados, {
-        where: { id_cliente: id }
+async function substituir(id, { endereco, ...dados }) {
+    return sequelize.transaction(async (t) => {
+        const cliente = await Cliente.findByPk(id, { transaction: t });
+        let id_endereco = null;
+
+        if (endereco && cliente.id_endereco) {
+            await Endereco.update(endereco, {
+                where: { id_endereco: cliente.id_endereco },
+                transaction: t
+            });
+            id_endereco = cliente.id_endereco;
+        } else if (endereco) {
+            const novo = await Endereco.create(endereco, { transaction: t });
+            id_endereco = novo.id_endereco;
+        }
+
+        return Cliente.update(
+            { ...dados, id_endereco },
+            { where: { id_cliente: id }, transaction: t }
+        );
     });
 }
 

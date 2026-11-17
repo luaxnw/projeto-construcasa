@@ -84,16 +84,14 @@ async function criar(req, res) {
 }
 
 async function substituir(req, res) {
-    const { nome, email, telefone, endereco } = req.body;
+    const { nome, cpf_cnpj, email, telefone, endereco } = req.body;
     const id = Number(req.params.id);
 
     if (!Number.isInteger(id) || id <= 0) {
-        return res.status(400).json({
-            erro: "ID inválido"
-        });
+        return res.status(400).json({ erro: "ID inválido" });
     }
 
-    if (!nome || !endereco) {
+    if (!nome || !telefone) {
         return res.status(400).json({
             erro: "Dados inválidos",
             detalhes: [
@@ -104,14 +102,13 @@ async function substituir(req, res) {
     }
 
     try {
-        const cliente = await services.substituir(
-            id,
-            {
-                nome,
-                email,
-                telefone,
-                endereco
-            });
+        const cliente = await services.substituir(id, {
+            nome,
+            cpf_cnpj,
+            email,
+            telefone,
+            endereco
+        });
 
         return res.status(200).json({
             mensagem: "Cliente atualizado com sucesso",
@@ -120,32 +117,22 @@ async function substituir(req, res) {
 
     } catch (erro) {
         if (erro.message === "CLIENTE_NAO_EXISTE") {
-            console.log("Cliente não encontrado");
-            return res.status(404).json({
-                erro: "Cliente não econtrado"
-            });
+            return res.status(404).json({ erro: "Cliente não encontrado" });
+        }
+        if (erro.message === "EMAIL_JA_EXISTE") {
+            return res.status(409).json({ erro: "Email já cadastrado" });
+        }
+        if (erro.message === "TELEFONE_JA_EXISTE") {
+            return res.status(409).json({ erro: "Telefone já cadastrado" });
+        }
+        if (erro.name === "SequelizeUniqueConstraintError") {
+            return res.status(409).json({ erro: "CPF/CNPJ já cadastrado" });
         }
 
-        else if (erro.message === "EMAIL_JA_EXISTE") {
-            console.log(`Email ${email} já cadastrado`);
-            return res.status(409).json({
-                erro: "Email já cadastrado"
-            });
-        }
-
-        else if (erro.message === "TELEFONE_JA_EXISTE") {
-            console.log(`Telefone ${telefone} já cadastrado`);
-            return res.status(409).json({
-                erro: "Telefone já cadastrado"
-            });
-        }
-
-        else {
-            console.log("Erro ao atualizar cliente", erro);
-            return res.status(500).json({
-                erro: erro.message
-            });
-        }
+        console.log("Erro ao atualizar cliente", erro);
+        return res.status(500).json({
+            erro: "Não foi possível atualizar o cliente. Tente novamente."
+        });
     }
 }
 
