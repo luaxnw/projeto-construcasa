@@ -5,15 +5,15 @@ async function listar() {
 }
 
 async function listarPorID(id) {
-    return repository.listarPorID(id)
+    return repository.buscarPorId(id);
 }
 
 async function listarPorEmail(email) {
-    return repository.listarPorEmail(email);
+    return repository.buscarPorEmail(email);
 }
 
 async function listarPorTelefone(telefone) {
-    return repository.listarPorTelefone(telefone);
+    return repository.buscarPorTelefone(telefone);
 }
 
 async function criar(cliente) {
@@ -33,19 +33,20 @@ async function substituir(id, cliente) {
         throw new Error("CLIENTE_NAO_EXISTE");
     }
 
-    const clienteEmail = await listarPorEmail(cliente.email);
-
-    if (clienteEmail && clienteEmail.id !== id) {
-        throw new Error("EMAIL_JA_EXISTE");
+    if (cliente.email) {
+        const clienteEmail = await listarPorEmail(cliente.email);
+        if (clienteEmail && clienteEmail.id_cliente !== id) {
+            throw new Error("EMAIL_JA_EXISTE");
+        }
     }
 
     const clienteTelefone = await listarPorTelefone(cliente.telefone);
-
-    if (clienteTelefone && clienteTelefone.id !== id) {
+    if (clienteTelefone && clienteTelefone.id_cliente !== id) {
         throw new Error("TELEFONE_JA_EXISTE");
     }
 
-    return repository.substituir(id, cliente);
+    await repository.substituir(id, cliente);
+    return listarPorID(id);
 }
 
 async function excluir(id) {
@@ -53,7 +54,7 @@ async function excluir(id) {
         throw new Error("CLIENTE_NAO_EXISTE");
     }
 
-   return repository.excluir(id);
+    return repository.excluir(id);
 }
 
 module.exports = {

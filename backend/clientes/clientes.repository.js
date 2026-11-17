@@ -1,4 +1,5 @@
-const { Cliente } = require("../database/models");
+const sequelize = require("../database/connection");
+const { Cliente, Endereco } = require("../database/models");
 
 async function listar() {
     return Cliente.findAll({
@@ -22,14 +23,23 @@ async function buscarPorTelefone(telefone) {
     });
 }
 
-async function buscarPorCpf(cpf) {
+async function buscarPorCpfCnpj(cpf_cnpj) {
     return Cliente.findOne({
-        where: { cpf }
+        where: { cpf_cnpj }
     });
 }
 
-async function criar(dados) {
-    return Cliente.create(dados);
+async function criar({ endereco, ...dados }) {
+    return sequelize.transaction(async (t) => {
+        let id_endereco = null;
+
+        if (endereco) {
+            const novoEndereco = await Endereco.create(endereco, { transaction: t });
+            id_endereco = novoEndereco.id_endereco;
+        }
+
+        return Cliente.create({ ...dados, id_endereco }, { transaction: t });
+    });
 }
 
 async function substituir(id, dados) {
@@ -47,9 +57,9 @@ async function excluir(id) {
 module.exports = {
     listar,
     buscarPorId,
-    buscarPorCpf,
     buscarPorEmail,
     buscarPorTelefone,
+    buscarPorCpfCnpj,
     criar,
     substituir,
     excluir
