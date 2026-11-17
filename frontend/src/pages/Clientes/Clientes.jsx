@@ -9,6 +9,7 @@ export default function Clientes() {
   const [clientes, setClientes] = useState([]);
   const [busca, setBusca] = useState("");
   const [erro, setErro] = useState("");
+  const [ordem, setOrdem] = useState("nome");
 
   useEffect(() => {
     fetch(`${API}/clientes`)
@@ -58,6 +59,41 @@ export default function Clientes() {
       .some((campo) => String(campo).toLowerCase().includes(busca.toLowerCase()))
   );
 
+  function sobrenome(nome) {
+    const partes = nome.trim().split(/\s+/);
+    return partes.length > 1 ? partes[partes.length - 1] : "";
+  }
+
+  function ddd(telefone) {
+    let digitos = String(telefone || "").replace(/\D/g, "");
+    if (digitos.startsWith("55") && digitos.length >= 12) {
+      digitos = digitos.slice(2);
+    }
+    return digitos.slice(0, 2);
+  }
+
+  const comparar = (a, b) => a.localeCompare(b, "pt-BR");
+
+  const ordenados = [...filtrados].sort((a, b) => {
+    if (ordem === "recentes") {
+      return b.id_cliente - a.id_cliente;
+    }
+    if (ordem === "sobrenome") {
+      return comparar(sobrenome(a.nome), sobrenome(b.nome)) || comparar(a.nome, b.nome);
+    }
+    if (ordem === "ddd") {
+      return comparar(ddd(a.telefone), ddd(b.telefone)) || comparar(a.nome, b.nome);
+    }
+    return comparar(a.nome, b.nome);
+  });
+
+  const ROTULOS_ORDEM = {
+    recentes: "Adicionados recentemente",
+    nome: "Nome",
+    sobrenome: "Sobrenome",
+    ddd: "DDD",
+  };
+
   return (
     <div>
       <h2>Clientes</h2>
@@ -79,6 +115,23 @@ export default function Clientes() {
 
       <h4>Lista de clientes:</h4>
       <div className="d-flex gap-2 mb-3">
+        <Dropdown>
+          <Dropdown.Toggle variant="secondary" size="sm">
+            Filtros: {ROTULOS_ORDEM[ordem]}
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            {Object.entries(ROTULOS_ORDEM).map(([chave, rotulo]) => (
+              <Dropdown.Item
+                key={chave}
+                active={ordem === chave}
+                onClick={() => setOrdem(chave)}
+              >
+                {rotulo}
+              </Dropdown.Item>
+            ))}
+          </Dropdown.Menu>
+        </Dropdown>
+
         <Form.Control
           placeholder="Buscar nome, email, CPF/CNPJ, telefone"
           value={busca}
@@ -92,7 +145,7 @@ export default function Clientes() {
       {erro && <div className="text-danger mb-2">{erro}</div>}
       {!erro && filtrados.length === 0 && <div>Nenhum cliente encontrado.</div>}
 
-      {filtrados.map((c) => (
+      {ordenados.map((c) => (
         <div
           key={c.id_cliente}
           className="card-cc p-3 mb-2 d-flex justify-content-between align-items-start"
