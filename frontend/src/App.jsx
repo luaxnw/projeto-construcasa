@@ -5,6 +5,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import Clientes from "./pages/Clientes/Clientes";
 import CadastrarCliente from "./pages/Clientes/CadastrarCliente";
 import Categorias from "./pages/Categorias/Categorias";
+import Produtos from "./pages/Produtos/Produtos";
 
 export default function App() {
   return (
@@ -18,7 +19,7 @@ export default function App() {
                 <Route path="/clientes/novo" element={<CadastrarCliente />} />
                 <Route path="/clientes/:id/editar" element={<CadastrarCliente />} />
                 <Route path="/categorias" element={<Categorias />} />
-                <Route path="/produtos" element={<h2>Produtos</h2>} />
+                <Route path="/produtos" element={<Produtos />} />
                 <Route path="/pedidos" element={<h2>Pedidos</h2>} />
                 </Route>
             </Routes>
