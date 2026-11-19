@@ -4,7 +4,7 @@ const sequelize = require('../connection');
 const UnidadeMedida = sequelize.define(
     "UnidadeMedida",
     {
-        id_unidade: {
+        id_unidade_medida: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true

@@ -23,30 +23,26 @@ async function buscarPorNome(nome) {
 }
 
 async function criar(produto) {
-    if (await buscarPorNome(produto.nome))
+    if (await repository.buscarPorNome(produto.nome))
         throw new Error("PRODUTO_JA_EXISTE");
 
-    return repository.criar(produto);
+    const criado = await repository.criar(produto);
+    return repository.buscarPorId(criado.id_produto);
 }
 
 async function substituir(id, produto) {
-    const produtoRet = await repository.substituir(id, produto);
+    await buscarPorId(id);
 
-    if (!produtoRet)
-        throw new Error("PRODUTO_NAO_EXISTE");
-
-    const produtoNome = await buscarPorNome(produto.nome);
-
-    if (produtoNome && produtoNome.id_produto !== id)
+    const existente = await repository.buscarPorNome(produto.nome);
+    if (existente && existente.id_produto !== id)
         throw new Error("NOME_JA_EXISTE");
 
-    return produtoRet;
+    await repository.substituir(id, produto);
+    return repository.buscarPorId(id);
 }
 
 async function excluir(id) {
-    if (!await buscarPorId(id))
-        throw new Error("PRODUTO_NAO_EXISTE");
-
+    await buscarPorId(id);
     return repository.excluir(id);
 }
 

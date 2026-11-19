@@ -1,25 +1,26 @@
-const { Produto } = require("../database/models");
+const { Produto, Categoria, UnidadeMedida, Sequelize } = require("../database/models");
+
+// Traz junto o nome da categoria e a sigla da unidade
+const INCLUIR = [
+    { model: Categoria, as: "categoria", attributes: ["id_categoria", "nome"] },
+    { model: UnidadeMedida, as: "unidades_medida", attributes: ["id_unidade_medida", "nome", "sigla"] },
+];
 
 async function listar() {
-    return Produto.findAll({ order: [["nome", "ASC"]] });
+    return Produto.findAll({ include: INCLUIR, order: [["nome", "ASC"]] });
 }
 
 async function buscarPorId(id) {
-    const produto = await Produto.findByPk(id);
-    if (!produto)
-        return null
-
-    return produto;
+    return Produto.findByPk(id, { include: INCLUIR });
 }
 
 async function buscarPorNome(nome) {
-    const produto = await Produto.findOne({
-        where: { nome: nome }
+    return Produto.findOne({
+        where: Sequelize.where(
+            Sequelize.fn("lower", Sequelize.col("Produto.nome")),
+            Sequelize.fn("lower", nome)
+        ),
     });
-    if (!produto)
-        return null;
-
-    return produto;
 }
 
 async function criar(dados) {
@@ -27,23 +28,11 @@ async function criar(dados) {
 }
 
 async function substituir(id, dados) {
-    const produto = await Produto.findByPk(id);
-    
-    if (!produto)
-        return null;
-
-    await produto.update(dados);
-
-    return produto;
+    return Produto.update(dados, { where: { id_produto: id } });
 }
 
 async function excluir(id) {
-    const produto = await Produto.findByPk(id);
-    if (!produto)
-        return null;
-
-    await produto.destroy();
-    return produto;
+    return Produto.destroy({ where: { id_produto: id } });
 }
 
 module.exports = {

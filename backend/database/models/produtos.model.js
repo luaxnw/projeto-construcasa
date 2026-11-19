@@ -10,7 +10,7 @@ const Produto = sequelize.define(
             autoIncrement: true,
         },
         nome: {
-            type: DataTypes.STRING(100),
+            type: DataTypes.STRING(150),
             allowNull: false,
         },
         descricao: {
@@ -28,6 +28,11 @@ const Produto = sequelize.define(
             type: DataTypes.INTEGER,
             allowNull: false,
         },
+        qtd_estoque: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 0,
+        },
         ativo: {
             type: DataTypes.BOOLEAN,
             allowNull: false,
@@ -42,10 +47,10 @@ const Produto = sequelize.define(
 );
 
 Produto.associate = (db) => {
-    //Produto.belongsTo(db.Categoria, {
-    //    foreignKey: "id_categoria",
-    //    as: "categorias"
-    //});
+    Produto.belongsTo(db.Categoria, {
+        foreignKey: "id_categoria",
+        as: "categoria"
+    });
 
     Produto.belongsTo(db.UnidadeMedida, {
         foreignKey: "id_unidade_medida",
