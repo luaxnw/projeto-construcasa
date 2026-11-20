@@ -1,19 +1,19 @@
-const db = require('../database/database');
+const { Funcionario } = require("../database/models");
 
 async function listar() {
-    return db.any("SELECT * FROM clientes ORDER BY nome");
+    return Funcionario.findAll({
+        order: [["nome", "ASC"]]
+    });
 }
 
-async function listarPorID(id) {
-    return db.oneOrNone("SELECT * FROM clientes WHERE id = $1", [id]);
+async function buscarPorId(id) {
+    return Funcionario.findByPk(id);
 }
 
-async function listarPorEmail(email) {
-    return db.oneOrNone("SELECT * FROM clientes WHERE email = $1", [email]);
-}
-
-async function listarPorTelefone(telefone) {
-    return db.oneOrNone("SELECT * FROM clientes WHERE telefone = $1", [telefone]);
+async function buscarPorNome(nome) {
+    return Funcionario.findOne({
+        where: { nome }
+    });
 }
 
 async function criar(cliente) {
@@ -38,7 +38,7 @@ async function substituir(id, cliente) {
 }
 
 async function excluir(id) {
-    return db.oneOrNone("DELETE FROM clientes WHERE id = $1 RETURNING *", 
+    return db.oneOrNone("DELETE FROM clientes WHERE id = $1 RETURNING *",
         [id]);
 }
 
