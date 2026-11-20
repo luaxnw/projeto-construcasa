@@ -33,7 +33,7 @@ const Funcionario = sequelize.define(
         ativo: {
             type: DataTypes.BOOLEAN,
             allowNull: false,
-            default: true
+            defaultValue: true
         }
     },
     {

@@ -20,39 +20,38 @@ const Pedido = sequelize.define(
         forma_pagamento: {
             type: DataTypes.STRING(15),
             allowNull: false,
-            default: 'pix'
+            defaultValue: "pix"
         },
         tipo_entrega: {
             type: DataTypes.STRING(10),
             allowNull: false,
-            default: 'retirada'
+            defaultValue: "retirada"
         },
         id_endereco_entrega: {
-            type: DataTypes.INTEGER,
-            allowNull: false
+            type: DataTypes.INTEGER
         },
         status_pagamento: {
             type: DataTypes.STRING(25),
             allowNull: false,
-            default: 'aguardando_pagamento'
+            defaultValue: "aguardando_pagamento"
         },
         status_entrega: {
-            type: DataTypes.STRING(25),
+            type: DataTypes.STRING(20),
             allowNull: false,
-            default: 'nao_se_aplica'
+            defaultValue: "nao_se_aplica"
         },
         status_pedido: {
-            type: DataTypes.STRING(25),
+            type: DataTypes.STRING(15),
             allowNull: false,
-            default: 'em_aberto'
+            defaultValue: "em_aberto"
         },
         valor_total: {
             type: DataTypes.DECIMAL(12, 2),
             allowNull: false,
-            default: 0
+            defaultValue: 0
         },
         observacoes: {
-            type: DataTypes.STRING(255)
+            type: DataTypes.TEXT
         },
     },
     {
@@ -80,7 +79,7 @@ Pedido.associate = (db) => {
 
     Pedido.hasMany(db.ItemPedido, {
         foreignKey: "id_pedido",
-        as: "pedidos"
+        as: "itens"
     });
 }
 
