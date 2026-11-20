@@ -6,6 +6,7 @@ import Clientes from "./pages/Clientes/Clientes";
 import CadastrarCliente from "./pages/Clientes/CadastrarCliente";
 import Categorias from "./pages/Categorias/Categorias";
 import Produtos from "./pages/Produtos/Produtos";
+import NovoPedido from "./pages/Pedidos/NovoPedido";
 
 export default function App() {
   return (
@@ -20,7 +21,7 @@ export default function App() {
                 <Route path="/clientes/:id/editar" element={<CadastrarCliente />} />
                 <Route path="/categorias" element={<Categorias />} />
                 <Route path="/produtos" element={<Produtos />} />
-                <Route path="/pedidos" element={<h2>Pedidos</h2>} />
+                <Route path="/pedidos" element={<NovoPedido />} />
                 </Route>
             </Routes>
             </BrowserRouter>
