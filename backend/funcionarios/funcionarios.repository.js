@@ -16,6 +16,12 @@ async function buscarPorNome(nome) {
     });
 }
 
+async function buscarPorCpf(cpf) {
+    return Funcionario.findOne({
+        where: { cpf }
+    });
+}
+
 async function criar(dados) {
     return Funcionario.create(dados);
 }
@@ -46,6 +52,7 @@ module.exports = {
     listar,
     buscarPorId,
     buscarPorNome,
+    buscarPorCpf,
     criar,
     substituir,
     excluir
