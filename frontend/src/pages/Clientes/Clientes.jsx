@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Dropdown, Form } from "react-bootstrap";
+import "../../styles/paginas.css";
 
 const API = "http://localhost:3001";
 
@@ -95,28 +96,33 @@ export default function Clientes() {
   };
 
   return (
-    <div>
-      <h2>Clientes</h2>
+    <div className="pg">
+      <h2 className="pg-titulo">Clientes</h2>
 
-      <div className="d-flex gap-3 my-3">
-        <div className="card-cc p-3 text-center">
-          <div className="small">Clientes cadastrados:</div>
-          <div className="fs-3 fw-bold" style={{ color: "#d32525" }}>
-            {clientes.length}
-          </div>
+      <div className="pg-stats">
+        <div className="pg-stat">
+          <div className="pg-stat-rotulo">Clientes cadastrados</div>
+          <div className="pg-stat-valor">{clientes.length}</div>
         </div>
-        <div className="card-cc p-3 text-center">
-          <div className="small">Cadastrados neste mês:</div>
-          <div className="fs-3 fw-bold" style={{ color: "#d32525" }}>
-            {doMes.length}
-          </div>
+        <div className="pg-stat">
+          <div className="pg-stat-rotulo">Cadastrados neste mês</div>
+          <div className="pg-stat-valor">{doMes.length}</div>
         </div>
       </div>
 
-      <h4>Lista de clientes:</h4>
-      <div className="d-flex gap-2 mb-3">
+      <h3 className="pg-subtitulo">Lista de clientes</h3>
+      <div className="pg-barra">
         <Dropdown>
-          <Dropdown.Toggle variant="secondary" size="sm">
+          <Dropdown.Toggle variant="link" className="pg-filtro">
+            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+              <path
+                d="M4 7h10M18 7h2M4 17h2M10 17h10M14 4v6M6 14v6"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+            </svg>
             Filtros: {ROTULOS_ORDEM[ordem]}
           </Dropdown.Toggle>
           <Dropdown.Menu>
@@ -133,46 +139,55 @@ export default function Clientes() {
         </Dropdown>
 
         <Form.Control
+          className="pg-busca"
           placeholder="Buscar nome, email, CPF/CNPJ, telefone"
+          aria-label="Buscar clientes"
           value={busca}
           onChange={(e) => setBusca(e.target.value)}
         />
-        <Button variant="danger" onClick={() => navigate("/clientes/novo")}>
+        <Button
+          variant="link"
+          className="pg-novo"
+          aria-label="Novo cliente"
+          onClick={() => navigate("/clientes/novo")}
+        >
           +
         </Button>
       </div>
 
-      {erro && <div className="text-danger mb-2">{erro}</div>}
-      {!erro && filtrados.length === 0 && <div>Nenhum cliente encontrado.</div>}
+      {erro && <div className="pg-aviso" role="alert">{erro}</div>}
+      {!erro && filtrados.length === 0 && (
+        <div className="pg-vazio">Nenhum cliente encontrado.</div>
+      )}
 
-      {ordenados.map((c) => (
-        <div
-          key={c.id_cliente}
-          className="card-cc p-3 mb-2 d-flex justify-content-between align-items-start"
-        >
-          <div>
-            <div className="fs-5 fw-bold">{c.nome}</div>
-            <div className="small">
-              {c.telefone}
-              {c.cpf_cnpj ? " · CPF/CNPJ informado" : ""}
+      <div className="pg-lista">
+        {ordenados.map((c) => (
+          <div key={c.id_cliente} className="pg-item">
+            <div>
+              <div className="pg-item-nome">{c.nome}</div>
+              <div className="pg-item-sub">
+                {c.telefone}
+                {c.cpf_cnpj ? " · CPF/CNPJ informado" : ""}
+              </div>
             </div>
-          </div>
 
-          <Dropdown align="end">
-            <Dropdown.Toggle
-              variant="link"
-              className="menu-pontos text-white text-decoration-none p-0"
-            >
-              •••
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item onClick={() => editar(c)}>Editar</Dropdown.Item>
-              <Dropdown.Item onClick={() => excluir(c)}>Excluir</Dropdown.Item>
-              <Dropdown.Item>Fechar</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-        </div>
-      ))}
+            <Dropdown align="end">
+              <Dropdown.Toggle
+                variant="link"
+                className="menu-pontos pg-pontos"
+                aria-label={`Opções de ${c.nome}`}
+              >
+                •••
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={() => editar(c)}>Editar</Dropdown.Item>
+                <Dropdown.Item onClick={() => excluir(c)}>Excluir</Dropdown.Item>
+                <Dropdown.Item>Fechar</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

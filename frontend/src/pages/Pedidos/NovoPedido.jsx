@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
+import "../../styles/paginas.css";
 
 const API = "http://localhost:3001";
 
@@ -249,44 +250,45 @@ export default function NovoPedido() {
   }, 0);
 
   return (
-    <div>
-      <h2>Registrar pedido</h2>
-      <div className="small mb-3">
+    <div className="pg">
+      <h2 className="pg-titulo">Registrar pedido</h2>
+      <p className="pg-sub">
         Pesquise por nome ou categoria, confira estoque e preço e adicione ao
         pedido.
-      </div>
+      </p>
 
-      {erroCarga && <div className="text-danger mb-2">{erroCarga}</div>}
+      {erroCarga && <div className="pg-aviso mt-3" role="alert">{erroCarga}</div>}
 
-      <Row className="g-3">
-        <Col lg={6}>
+      <Row className="g-3 mt-2">
+        <Col lg={5}>
           <Form.Control
-            className="mb-3"
+            className="pg-busca mb-3"
             placeholder="Buscar por nome ou categoria"
+            aria-label="Buscar produtos"
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
           />
 
-          <div style={{ maxHeight: 480, overflowY: "auto" }}>
+          <div className="pg-lista" style={{ maxHeight: 480, overflowY: "auto" }}>
             {!erroCarga && disponiveis.length === 0 && (
-              <div>Nenhum produto encontrado.</div>
+              <div className="pg-vazio">Nenhum produto encontrado.</div>
             )}
 
             {disponiveis.map((p) => (
-              <div
-                key={p.id_produto}
-                className="card-cc p-3 mb-2 d-flex justify-content-between align-items-center gap-2"
-              >
+              <div key={p.id_produto} className="pg-item">
                 <div>
-                  <div className="fw-bold">{p.nome}</div>
-                  <div className="small">
+                  <div className="pg-carrinho-nome">{p.nome}</div>
+                  <div className="pg-item-sub">
                     {p.categoria?.nome} · {p.unidades_medida?.nome} ·{" "}
                     {formatarPreco(p.preco_venda)} · Estoque {p.qtd_estoque}
                   </div>
                 </div>
                 <Button
-                  variant="danger"
+                  variant={p.qtd_estoque === 0 ? "secondary" : "danger"}
                   size="sm"
+                  className={`pg-btn pg-btn-sm ${
+                    p.qtd_estoque === 0 ? "pg-btn-sec" : "pg-btn-pri"
+                  }`}
                   disabled={p.qtd_estoque === 0}
                   onClick={() => adicionar(p)}
                 >
@@ -297,24 +299,25 @@ export default function NovoPedido() {
           </div>
         </Col>
 
-        <Col lg={6}>
-          <div className="card-cc p-3">
-            <Form.Label>Cliente *</Form.Label>
-            <Form.Select
-              className="mb-3"
-              value={form.id_cliente}
-              onChange={(e) => setForm({ ...form, id_cliente: e.target.value })}
-            >
-              <option value="">Selecione...</option>
-              {clientes.map((c) => (
-                <option key={c.id_cliente} value={c.id_cliente}>
-                  {c.nome} · {c.telefone}
-                </option>
-              ))}
-            </Form.Select>
+        <Col lg={7}>
+          <div className="pg-painel">
+            <Form.Group className="mb-3" controlId="pedido-cliente">
+              <Form.Label>Cliente *</Form.Label>
+              <Form.Select
+                value={form.id_cliente}
+                onChange={(e) => setForm({ ...form, id_cliente: e.target.value })}
+              >
+                <option value="">Selecione...</option>
+                {clientes.map((c) => (
+                  <option key={c.id_cliente} value={c.id_cliente}>
+                    {c.nome} · {c.telefone}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
 
             <Row className="g-3 mb-3">
-              <Col sm={6}>
+              <Form.Group as={Col} sm={6} controlId="pedido-canal">
                 <Form.Label>Canal de atendimento</Form.Label>
                 <Form.Select
                   value={form.canal}
@@ -326,8 +329,8 @@ export default function NovoPedido() {
                     </option>
                   ))}
                 </Form.Select>
-              </Col>
-              <Col sm={6}>
+              </Form.Group>
+              <Form.Group as={Col} sm={6} controlId="pedido-pagamento">
                 <Form.Label>Forma de pagamento *</Form.Label>
                 <Form.Select
                   value={form.forma_pagamento}
@@ -342,7 +345,7 @@ export default function NovoPedido() {
                     </option>
                   ))}
                 </Form.Select>
-              </Col>
+              </Form.Group>
             </Row>
 
             <Form.Label>Tipo de pedido *</Form.Label>
@@ -350,6 +353,10 @@ export default function NovoPedido() {
               <Button
                 size="sm"
                 variant={form.tipo_entrega === "entrega" ? "danger" : "secondary"}
+                className={`pg-btn pg-btn-sm ${
+                  form.tipo_entrega === "entrega" ? "pg-btn-pri" : "pg-btn-sec"
+                }`}
+                aria-pressed={form.tipo_entrega === "entrega"}
                 onClick={() => setForm({ ...form, tipo_entrega: "entrega" })}
               >
                 Entrega
@@ -357,6 +364,10 @@ export default function NovoPedido() {
               <Button
                 size="sm"
                 variant={form.tipo_entrega === "retirada" ? "danger" : "secondary"}
+                className={`pg-btn pg-btn-sm ${
+                  form.tipo_entrega === "retirada" ? "pg-btn-pri" : "pg-btn-sec"
+                }`}
+                aria-pressed={form.tipo_entrega === "retirada"}
                 onClick={() => setForm({ ...form, tipo_entrega: "retirada" })}
               >
                 Retirada
@@ -365,10 +376,9 @@ export default function NovoPedido() {
 
             {form.tipo_entrega === "entrega" && clienteSelecionado && (
               <div
-                className="small mb-3"
-                style={{
-                  color: clienteSelecionado.id_endereco ? undefined : "#e0b020",
-                }}
+                className={`pg-nota mb-2 ${
+                  clienteSelecionado.id_endereco ? "" : "pg-nota--alerta"
+                }`}
               >
                 {clienteSelecionado.id_endereco
                   ? `Endereço de entrega: ${textoEndereco}`
@@ -376,9 +386,9 @@ export default function NovoPedido() {
               </div>
             )}
 
-            <h5 className="mt-3">Itens do pedido</h5>
+            <h3 className="pg-sec-titulo">Itens do pedido</h3>
             {carrinho.length === 0 && (
-              <div className="small mb-3">Nenhum produto adicionado.</div>
+              <div className="pg-nota mb-3">Nenhum produto adicionado.</div>
             )}
 
             {carrinho.map((item) => {
@@ -387,17 +397,18 @@ export default function NovoPedido() {
               const subtotalValido = Number.isInteger(quantidade) && quantidade > 0;
 
               return (
-                <div key={item.id_produto} className="mb-3">
+                <div key={item.id_produto} className="pg-carrinho-item">
                   <div className="d-flex flex-wrap align-items-center gap-2">
                     <div className="flex-grow-1">
-                      <div className="fw-bold">{item.nome}</div>
-                      <div className="small">
+                      <div className="pg-carrinho-nome">{item.nome}</div>
+                      <div className="pg-item-sub">
                         {item.unidade} · {formatarPreco(item.preco)} · Estoque{" "}
                         {item.estoque}
                       </div>
                     </div>
                     <Form.Control
-                      style={{ width: 90 }}
+                      className="pg-qtd"
+                      aria-label={`Quantidade de ${item.nome}`}
                       inputMode="numeric"
                       value={item.quantidade}
                       isInvalid={item.tocado && !!erro}
@@ -406,38 +417,34 @@ export default function NovoPedido() {
                       }
                       onBlur={() => marcarTocado(item.id_produto)}
                     />
-                    <div style={{ minWidth: 90 }} className="text-end">
+                    <div className="pg-subtotal">
                       {subtotalValido ? formatarPreco(item.preco * quantidade) : "—"}
                     </div>
                     <Button
                       variant="secondary"
                       size="sm"
+                      className="pg-btn pg-btn-sec pg-btn-sm"
                       onClick={() => remover(item.id_produto)}
                     >
                       Remover
                     </Button>
                   </div>
-                  {item.tocado && erro && (
-                    <div className="text-danger small mt-1">{erro}</div>
-                  )}
+                  {item.tocado && erro && <div className="pg-erro">{erro}</div>}
                 </div>
               );
             })}
 
-            <div className="d-flex justify-content-between align-items-center my-3">
-              <span className="fs-5 fw-bold">Total do pedido</span>
-              <span className="fs-4 fw-bold" style={{ color: "#d32525" }}>
-                {formatarPreco(total)}
-              </span>
+            <div className="pg-total">
+              <span className="pg-total-rotulo">Total do pedido</span>
+              <span className="pg-total-valor">{formatarPreco(total)}</span>
             </div>
 
             {aviso && (
               <div
-                className={`mb-3 ${
-                  aviso.tipo === "sucesso" ? "text-success" : "text-danger"
-                }`}
+                className={`pg-aviso${aviso.tipo === "sucesso" ? " pg-aviso--ok" : ""}`}
+                role={aviso.tipo === "sucesso" ? "status" : "alert"}
               >
-                <div className="fw-bold">{aviso.titulo}</div>
+                <div className="pg-aviso-titulo">{aviso.titulo}</div>
                 {aviso.itens.map((texto, indice) => (
                   <div key={indice}>{texto}</div>
                 ))}
@@ -446,7 +453,7 @@ export default function NovoPedido() {
 
             <Button
               variant="danger"
-              className="w-100"
+              className="pg-btn pg-btn-pri pg-btn-grande"
               onClick={registrar}
               disabled={enviando}
             >

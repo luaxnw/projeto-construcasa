@@ -9,6 +9,7 @@ import Produtos from "./pages/Produtos/Produtos";
 import Pedidos from "./pages/Pedidos/Pedidos";
 import NovoPedido from "./pages/Pedidos/NovoPedido";
 import Inicio from "./pages/Inicio/Inicio";
+import Financeiro from "./pages/Financeiro/Financeiro";
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
             <Route path="/produtos" element={<Produtos />} />
             <Route path="/pedidos" element={<Pedidos />} />
             <Route path="/pedidos/novo" element={<NovoPedido />} />
+            <Route path="/financeiro" element={<Financeiro />} />
           </Route>
         </Routes>
       </BrowserRouter>

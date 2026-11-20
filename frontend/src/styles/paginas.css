@@ -1,0 +1,613 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap");
+
+/* Estilo compartilhado das páginas de lista (Clientes, Categorias, Produtos, Pedidos).
+   Mesmas cores e fontes do Início. Tudo começa com "pg-" pra não conflitar. */
+
+/* Variáveis: também no .pg-modal, porque o Modal do react-bootstrap
+   é renderizado fora do .pg (no fim do body) e não herdaria nada. */
+.pg,
+.pg-modal {
+  --concreto: #15151b;
+  --argamassa: #22222b;
+  --linha: #33333e;
+  --cal: #ece6da;
+  --tijolo: #d32525;
+  --ambar: #f0b429;
+  --suave: #9d9dab;
+  --raio-card: 10px;   /* cards (resumo e lista) */
+  --raio-ctl: 8px;     /* busca, botões e menus */
+}
+
+.pg {
+  background: var(--concreto);
+  color: var(--cal);
+  font-family: "Barlow", system-ui, sans-serif;
+  border-radius: 18px;
+  padding: clamp(1rem, 3vw, 2rem);
+}
+
+.pg h2,
+.pg h3,
+.pg .pg-stat-valor {
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+  letter-spacing: 0.01em;
+}
+
+.pg-titulo {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 600;
+  line-height: 1;
+  margin: 0;
+}
+
+.pg-subtitulo {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin: 0 0 0.9rem;
+}
+
+/* ---------- cartões de resumo ---------- */
+.pg-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin: 1.5rem 0 2rem;
+}
+
+.pg-stat {
+  min-width: 190px;
+  padding: 1rem 1.4rem;
+  border-radius: var(--raio-card);
+  background: var(--argamassa);
+  text-align: center;
+}
+
+.pg-stat-rotulo {
+  font-size: 0.9rem;
+  color: var(--suave);
+}
+
+.pg-stat-valor {
+  color: var(--tijolo);
+  font-size: 2.8rem;
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* variações de cor do número nos cards de resumo */
+.pg-stat-valor.pg-neutro { color: var(--cal); }
+.pg-stat-valor.pg-alerta { color: var(--ambar); }
+
+/* ---------- barra de ferramentas ---------- */
+.pg-barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.pg-busca.form-control {
+  flex: 1 1 240px;
+  min-width: 0;
+  height: 42px;
+  border-radius: var(--raio-ctl);
+  padding: 0 1.1rem;
+  background: var(--argamassa);
+  border: 1.5px solid transparent;
+  color: var(--cal);
+}
+
+.pg-busca.form-control::placeholder {
+  color: var(--suave);
+}
+
+.pg-busca.form-control:focus {
+  background: var(--argamassa);
+  color: var(--cal);
+  border-color: var(--tijolo);
+  box-shadow: 0 0 0 3px rgba(211, 37, 37, 0.25);
+}
+
+.pg-filtro.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 42px;
+  padding: 0 1.1rem;
+  border: 0;
+  border-radius: var(--raio-ctl);
+  background: var(--argamassa);
+  color: var(--cal);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.pg-filtro.btn:hover,
+.pg-filtro.btn.show {
+  background: var(--linha);
+  color: var(--cal);
+}
+
+.pg-novo.btn {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--raio-ctl);
+  background: var(--tijolo);
+  color: #fff;
+  font-size: 1.5rem;
+  line-height: 1;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.pg-novo.btn:hover {
+  background: #e23a3a;
+  color: #fff;
+}
+
+.pg-filtro.btn:focus-visible,
+.pg-novo.btn:focus-visible,
+.pg-pontos.btn:focus-visible {
+  outline: 2px solid var(--ambar);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+/* menus suspensos no mesmo tom do site */
+.pg .dropdown-menu {
+  --bs-dropdown-bg: var(--argamassa);
+  --bs-dropdown-border-color: var(--linha);
+  --bs-dropdown-border-radius: var(--raio-ctl);
+  --bs-dropdown-link-color: var(--cal);
+  --bs-dropdown-link-hover-color: #fff;
+  --bs-dropdown-link-hover-bg: rgba(255, 255, 255, 0.07);
+  --bs-dropdown-link-active-bg: var(--tijolo);
+  --bs-dropdown-link-active-color: #fff;
+  --bs-dropdown-header-color: var(--suave);
+  --bs-dropdown-divider-bg: var(--linha);
+  padding: 0.4rem;
+}
+
+.pg .dropdown-item {
+  border-radius: 6px;
+}
+
+/* ---------- lista ---------- */
+.pg-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.pg-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.3rem;
+  border-radius: var(--raio-card);
+  background: var(--argamassa);
+  transition: transform 0.15s;
+}
+
+.pg-item:hover {
+  transform: translateY(-2px);
+}
+
+.pg-item-nome {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.pg-item-sub {
+  margin-top: 0.15rem;
+  font-size: 0.9rem;
+  color: var(--suave);
+}
+
+.pg-pontos.btn {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--raio-ctl);
+  color: var(--cal);
+  letter-spacing: 0.1em;
+  text-decoration: none;
+}
+
+.pg-pontos.btn:hover,
+.pg-pontos.btn.show {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+/* ---------- avisos ---------- */
+.pg-aviso {
+  margin: 0 0 1rem;
+  padding: 0.7rem 1rem;
+  border-left: 4px solid var(--tijolo);
+  background: rgba(211, 37, 37, 0.12);
+  border-radius: 12px;
+}
+
+.pg-vazio {
+  color: var(--suave);
+  padding: 1rem 0;
+}
+
+@media (max-width: 560px) {
+  .pg-stat {
+    flex: 1 1 140px;
+    min-width: 0;
+  }
+  .pg-item {
+    padding: 0.9rem 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pg-item {
+    transition: none;
+  }
+  .pg-item:hover {
+    transform: none;
+  }
+}
+
+/* ---------- formulário (Cadastrar / Editar) ---------- */
+.pg-form {
+  margin: 1.5rem 0 1rem;
+  padding: clamp(1rem, 2.5vw, 1.6rem);
+  border-radius: var(--raio-card);
+  background: var(--argamassa);
+}
+
+.pg .form-label,
+.pg-modal .form-label {
+  margin-bottom: 0.35rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--cal);
+}
+
+.pg-form .form-control,
+.pg-painel .form-control,
+.pg-modal .form-control {
+  height: 42px;
+  padding: 0 0.9rem;
+  border: 1.5px solid transparent;
+  border-radius: var(--raio-ctl);
+  background: var(--concreto);
+  color: var(--cal);
+}
+
+.pg-form .form-control:focus,
+.pg-painel .form-control:focus,
+.pg-modal .form-control:focus {
+  background: var(--concreto);
+  color: var(--cal);
+  border-color: var(--tijolo);
+  box-shadow: 0 0 0 3px rgba(211, 37, 37, 0.25);
+}
+
+.pg-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.6rem;
+}
+
+.pg-btn.btn {
+  white-space: nowrap;
+  padding: 0.55rem 1.3rem;
+  border-radius: var(--raio-ctl);
+  font-weight: 600;
+}
+
+.pg-btn-sec.btn {
+  --bs-btn-color: var(--cal);
+  --bs-btn-bg: var(--linha);
+  --bs-btn-border-color: var(--linha);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #43434f;
+  --bs-btn-hover-border-color: #43434f;
+  --bs-btn-active-bg: #43434f;
+  --bs-btn-active-border-color: #43434f;
+}
+
+.pg-btn-pri.btn {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: var(--tijolo);
+  --bs-btn-border-color: var(--tijolo);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #e23a3a;
+  --bs-btn-hover-border-color: #e23a3a;
+  --bs-btn-active-bg: #b81f1f;
+  --bs-btn-active-border-color: #b81f1f;
+  --bs-btn-disabled-bg: var(--tijolo);
+  --bs-btn-disabled-border-color: var(--tijolo);
+}
+
+.pg-btn.btn:focus-visible {
+  outline: 2px solid var(--ambar);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+/* ---------- modal (Categorias, etc.) ---------- */
+.pg-modal .modal-content {
+  background: var(--argamassa);
+  color: var(--cal);
+  font-family: "Barlow", system-ui, sans-serif;
+  border: 1px solid var(--linha);
+  border-radius: var(--raio-card);
+}
+
+.pg-modal .modal-header,
+.pg-modal .modal-footer {
+  border-color: var(--linha);
+}
+
+.pg-modal .modal-title {
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.pg-modal textarea.form-control {
+  height: auto;
+  padding: 0.6rem 0.9rem;
+}
+
+.pg-modal .form-check-input {
+  background-color: var(--concreto);
+  border-color: var(--linha);
+}
+
+.pg-modal .form-check-input:checked {
+  background-color: var(--tijolo);
+  border-color: var(--tijolo);
+}
+
+.pg-modal .form-check-input:focus {
+  border-color: var(--tijolo);
+  box-shadow: 0 0 0 3px rgba(211, 37, 37, 0.25);
+}
+
+.pg-modal .pg-aviso {
+  margin: 0.8rem 0 0;
+}
+
+.pg-modal .form-select,
+.pg-painel .form-select {
+  height: 42px;
+  padding: 0 2.25rem 0 0.9rem;
+  border: 1.5px solid transparent;
+  border-radius: var(--raio-ctl);
+  background-color: var(--concreto);
+  color: var(--cal);
+}
+
+.pg-modal .form-select:focus,
+.pg-painel .form-select:focus {
+  background-color: var(--concreto);
+  color: var(--cal);
+  border-color: var(--tijolo);
+  box-shadow: 0 0 0 3px rgba(211, 37, 37, 0.25);
+}
+
+/* ---------- textos e avisos auxiliares ---------- */
+.pg-sub {
+  margin: 0.5rem 0 0;
+  color: var(--suave);
+}
+
+.pg-nota {
+  font-size: 0.9rem;
+  color: var(--suave);
+}
+
+.pg-nota--alerta {
+  color: var(--ambar);
+}
+
+.pg-erro {
+  margin-top: 0.3rem;
+  font-size: 0.85rem;
+  color: #ff7b7b;
+}
+
+.pg-aviso--ok {
+  border-left-color: var(--cal);
+  background: rgba(236, 230, 218, 0.09);
+}
+
+.pg-aviso-titulo {
+  font-weight: 600;
+}
+
+/* ---------- botões auxiliares ---------- */
+.pg-btn-sm.btn {
+  padding: 0.35rem 0.9rem;
+  font-size: 0.9rem;
+}
+
+.pg-btn-alerta.btn {
+  --bs-btn-color: var(--concreto);
+  --bs-btn-bg: var(--ambar);
+  --bs-btn-border-color: var(--ambar);
+  --bs-btn-hover-color: var(--concreto);
+  --bs-btn-hover-bg: #f7c545;
+  --bs-btn-hover-border-color: #f7c545;
+  --bs-btn-active-bg: #d99f1c;
+  --bs-btn-active-border-color: #d99f1c;
+}
+
+.pg-link.btn {
+  padding: 0;
+  border: 0;
+  color: var(--cal);
+  font-size: 0.9rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.pg-link.btn:hover {
+  color: #fff;
+}
+
+.pg-link.btn:focus-visible {
+  outline: 2px solid var(--ambar);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+.pg-acoes--esq {
+  justify-content: flex-start;
+  margin-top: 1rem;
+}
+
+/* ---------- selos de status ---------- */
+.pg-selos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+}
+
+.pg-selo {
+  padding: 0.2rem 0.75rem;
+  border: 1.5px solid transparent;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.pg-selo-aberto { background: var(--tijolo); color: #fff; }
+.pg-selo-finalizado { background: var(--cal); color: var(--concreto); }
+.pg-selo-aguardando { background: var(--ambar); color: var(--concreto); }
+.pg-selo-pago { border-color: var(--cal); color: var(--cal); }
+.pg-selo-cancelado { border: 1.5px dashed #5d5d6b; color: var(--suave); }
+
+/* ---------- cartão de pedido (histórico) ---------- */
+.pg-pedido {
+  padding: 1rem 1.3rem;
+  border-radius: var(--raio-card);
+  background: var(--argamassa);
+}
+
+.pg-pedido-topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.pg-pedido-lado {
+  text-align: right;
+}
+
+.pg-valor {
+  color: var(--tijolo);
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+  font-size: 1.7rem;
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.pg-itens {
+  margin-top: 1rem;
+}
+
+.pg-itens-linha {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-top: 0.6rem;
+  margin-top: 0.6rem;
+  border-top: 1px solid var(--linha);
+  font-size: 0.95rem;
+}
+
+/* ---------- painel do Novo Pedido ---------- */
+.pg-painel {
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+  border-radius: var(--raio-card);
+  background: var(--argamassa);
+}
+
+.pg-painel .pg-sec-titulo {
+  margin: 1.2rem 0 0.6rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.pg-painel .form-control.is-invalid {
+  border-color: var(--tijolo);
+  background-image: none;
+}
+
+.pg-painel .pg-qtd.form-control {
+  width: 90px;
+  text-align: center;
+}
+
+.pg-carrinho-item {
+  padding: 0.8rem 0;
+  border-top: 1px solid var(--linha);
+}
+
+.pg-carrinho-item:last-of-type {
+  border-bottom: 1px solid var(--linha);
+}
+
+.pg-carrinho-nome {
+  font-weight: 600;
+}
+
+.pg-subtotal {
+  min-width: 90px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.pg-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1.2rem 0;
+}
+
+.pg-total-rotulo {
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.pg-total-valor {
+  color: var(--tijolo);
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.pg-btn-grande.btn {
+  width: 100%;
+  padding: 0.8rem 1.3rem;
+  font-size: 1.1rem;
+}

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { Badge, Button, Dropdown, Form } from "react-bootstrap";
+import { Button, Dropdown, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import "../../styles/paginas.css";
 
 const API = "http://localhost:3001";
 
@@ -11,14 +12,14 @@ const ROTULOS_ORDEM = {
 };
 
 const STATUS_PEDIDO = {
-    em_aberto: { rotulo: "Em aberto", cor: "danger" },
-    finalizado: { rotulo: "Finalizado", cor: "success" },
-    cancelado: { rotulo: "Cancelado", cor: "secondary" },
+    em_aberto: { rotulo: "Em aberto", cor: "aberto" },
+    finalizado: { rotulo: "Finalizado", cor: "finalizado" },
+    cancelado: { rotulo: "Cancelado", cor: "cancelado" },
 };
 
 const STATUS_PAGAMENTO = {
-    aguardando_pagamento: { rotulo: "Aguardando pagamento", cor: "warning" },
-    pago: { rotulo: "Pago", cor: "success" },
+    aguardando_pagamento: { rotulo: "Aguardando pagamento", cor: "aguardando" },
+    pago: { rotulo: "Pago", cor: "pago" },
 };
 
 const STATUS_ENTREGA = {
@@ -59,11 +60,7 @@ function EtiquetaStatus({ tabela, valor }) {
     const info = tabela[valor];
     if (!info) return null;
 
-    return (
-        <Badge bg={info.cor} text={info.cor === "warning" ? "dark" : undefined}>
-            {info.rotulo}
-        </Badge>
-    );
+    return <span className={`pg-selo pg-selo-${info.cor}`}>{info.rotulo}</span>;
 }
 
 export default function Pedidos() {
@@ -195,32 +192,37 @@ export default function Pedidos() {
         .join(" · ");
 
     return (
-        <div>
-            <h2>Pedidos</h2>
+        <div className="pg">
+            <h2 className="pg-titulo">Pedidos</h2>
 
-            <div className="d-flex flex-wrap gap-3 my-3">
-                <div className="card-cc p-3 text-center">
-                    <div className="small">Pedidos registrados:</div>
-                    <div className="fs-3 fw-bold">{pedidos.length}</div>
+            <div className="pg-stats">
+                <div className="pg-stat">
+                    <div className="pg-stat-rotulo">Pedidos registrados</div>
+                    <div className="pg-stat-valor pg-neutro">{pedidos.length}</div>
                 </div>
-                <div className="card-cc p-3 text-center">
-                    <div className="small">Pedidos em aberto:</div>
-                    <div className="fs-3 fw-bold" style={{ color: "#d32525" }}>
-                        {emAberto}
-                    </div>
+                <div className="pg-stat">
+                    <div className="pg-stat-rotulo">Pedidos em aberto</div>
+                    <div className="pg-stat-valor">{emAberto}</div>
                 </div>
-                <div className="card-cc p-3 text-center">
-                    <div className="small">Aguardando pagamento:</div>
-                    <div className="fs-3 fw-bold" style={{ color: "#e0b020" }}>
-                        {aguardando}
-                    </div>
+                <div className="pg-stat">
+                    <div className="pg-stat-rotulo">Aguardando pagamento</div>
+                    <div className="pg-stat-valor pg-alerta">{aguardando}</div>
                 </div>
             </div>
 
-            <h4>Histórico de pedidos:</h4>
-            <div className="d-flex flex-wrap gap-2 mb-3">
+            <h3 className="pg-subtitulo">Histórico de pedidos</h3>
+            <div className="pg-barra">
                 <Dropdown autoClose="outside">
-                    <Dropdown.Toggle variant="secondary" size="sm">
+                    <Dropdown.Toggle variant="link" className="pg-filtro">
+                        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                            <path
+                                d="M4 7h10M18 7h2M4 17h2M10 17h10M14 4v6M6 14v6"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                            />
+                        </svg>
                         Filtros: {textoFiltros}
                     </Dropdown.Toggle>
 
@@ -277,117 +279,126 @@ export default function Pedidos() {
                 </Dropdown>
 
                 <Form.Control
-                    style={{ flex: "1 1 200px" }}
+                    className="pg-busca"
                     placeholder="Buscar cliente, telefone ou nº do pedido"
+                    aria-label="Buscar pedidos"
                     value={busca}
                     onChange={(e) => setBusca(e.target.value)}
                 />
-                <Button variant="danger" onClick={() => navigate("/pedidos/novo")}>
+                <Button
+                    variant="link"
+                    className="pg-novo"
+                    aria-label="Novo pedido"
+                    onClick={() => navigate("/pedidos/novo")}
+                >
                     +
                 </Button>
             </div>
 
             {aviso && (
                 <div
-                    className={`mb-2 ${aviso.tipo === "sucesso" ? "text-success" : "text-danger"
-                        }`}
+                    className={`pg-aviso${aviso.tipo === "sucesso" ? " pg-aviso--ok" : ""}`}
+                    role={aviso.tipo === "sucesso" ? "status" : "alert"}
                 >
                     {aviso.texto}
                 </div>
             )}
-            {erro && <div className="text-danger mb-2">{erro}</div>}
-            {!erro && filtrados.length === 0 && <div>Nenhum pedido encontrado.</div>}
+            {erro && <div className="pg-aviso" role="alert">{erro}</div>}
+            {!erro && filtrados.length === 0 && (
+                <div className="pg-vazio">Nenhum pedido encontrado.</div>
+            )}
 
-            {ordenados.map((p) => {
-                const canal = lerCanal(p.observacoes);
-                const expandido = aberto === p.id_pedido;
+            <div className="pg-lista">
+                {ordenados.map((p) => {
+                    const canal = lerCanal(p.observacoes);
+                    const expandido = aberto === p.id_pedido;
 
-                return (
-                    <div key={p.id_pedido} className="card-cc p-3 mb-2">
-                        <div className="d-flex flex-wrap justify-content-between align-items-start gap-2">
-                            <div>
-                                <div className="fs-5 fw-bold">
-                                    Pedido #{p.id_pedido} · {p.clientes?.nome || "Cliente removido"}
-                                </div>
-                                <div className="small">
-                                    {formatarData(p.createdAt)}
-                                    {canal && ` · ${canal}`}
-                                    {` · ${FORMAS_PAGAMENTO[p.forma_pagamento] || p.forma_pagamento}`}
-                                    {` · ${STATUS_ENTREGA[p.status_entrega] || p.status_entrega}`}
-                                </div>
-                                <div className="d-flex flex-wrap gap-2 mt-2">
-                                    <EtiquetaStatus tabela={STATUS_PEDIDO} valor={p.status_pedido} />
-                                    <EtiquetaStatus
-                                        tabela={STATUS_PAGAMENTO}
-                                        valor={p.status_pagamento}
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="text-end">
-                                <div className="fs-5 fw-bold" style={{ color: "#d32525" }}>
-                                    {formatarPreco(p.valor_total)}
-                                </div>
-                                <Button
-                                    variant="link"
-                                    className="text-white p-0"
-                                    onClick={() => setAberto(expandido ? null : p.id_pedido)}
-                                >
-                                    {expandido ? "Ocultar itens" : "Ver itens"}
-                                </Button>
-                            </div>
-                        </div>
-                        {p.status_pedido === "em_aberto" && (
-                            <div className="d-flex flex-wrap gap-2 mt-3">
-                                {p.status_pagamento === "aguardando_pagamento" ? (
-                                    <Button
-                                        size="sm"
-                                        variant="danger"
-                                        onClick={() => confirmarPagamento(p)}
-                                    >
-                                        Confirmar pagamento
-                                    </Button>
-                                ) : (
-                                    <Button
-                                        size="sm"
-                                        variant="secondary"
-                                        onClick={() => voltarParaAguardando(p)}
-                                    >
-                                        Voltar para aguardando pagamento
-                                    </Button>
-                                )}
-                                <Button
-                                    size="sm"
-                                    variant="warning"
-                                    onClick={() => cancelarPedido(p)}
-                                >
-                                    Cancelar pedido
-                                </Button>
-                            </div>
-                        )}
-                        {expandido && (
-                            <div className="mt-3">
-                                {(p.itens || []).map((item) => (
-                                    <div
-                                        key={item.id_item_pedido}
-                                        className="d-flex flex-wrap justify-content-between gap-2 small border-top pt-2 mt-2"
-                                    >
-                                        <span>
-                                            {item.produtos?.nome} · {Number(item.quantidade)}{" "}
-                                            {item.unidades_medida?.sigla} ×{" "}
-                                            {formatarPreco(item.preco_unitario)}
-                                        </span>
-                                        <span>{formatarPreco(item.subtotal)}</span>
+                    return (
+                        <div key={p.id_pedido} className="pg-pedido">
+                            <div className="pg-pedido-topo">
+                                <div>
+                                    <div className="pg-item-nome">
+                                        Pedido #{p.id_pedido} · {p.clientes?.nome || "Cliente removido"}
                                     </div>
-                                ))}
-                                <div className="small mt-2">
-                                    Atendido por {p.funcionarios?.nome}
+                                    <div className="pg-item-sub">
+                                        {formatarData(p.createdAt)}
+                                        {canal && ` · ${canal}`}
+                                        {` · ${FORMAS_PAGAMENTO[p.forma_pagamento] || p.forma_pagamento}`}
+                                        {` · ${STATUS_ENTREGA[p.status_entrega] || p.status_entrega}`}
+                                    </div>
+                                    <div className="pg-selos">
+                                        <EtiquetaStatus tabela={STATUS_PEDIDO} valor={p.status_pedido} />
+                                        <EtiquetaStatus
+                                            tabela={STATUS_PAGAMENTO}
+                                            valor={p.status_pagamento}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="pg-pedido-lado">
+                                    <div className="pg-valor">{formatarPreco(p.valor_total)}</div>
+                                    <Button
+                                        variant="link"
+                                        className="pg-link"
+                                        aria-expanded={expandido}
+                                        onClick={() => setAberto(expandido ? null : p.id_pedido)}
+                                    >
+                                        {expandido ? "Ocultar itens" : "Ver itens"}
+                                    </Button>
                                 </div>
                             </div>
-                        )}
-                    </div>
-                );
-            })}
+                            {p.status_pedido === "em_aberto" && (
+                                <div className="pg-acoes pg-acoes--esq">
+                                    {p.status_pagamento === "aguardando_pagamento" ? (
+                                        <Button
+                                            size="sm"
+                                            variant="danger"
+                                            className="pg-btn pg-btn-pri pg-btn-sm"
+                                            onClick={() => confirmarPagamento(p)}
+                                        >
+                                            Confirmar pagamento
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            size="sm"
+                                            variant="secondary"
+                                            className="pg-btn pg-btn-sec pg-btn-sm"
+                                            onClick={() => voltarParaAguardando(p)}
+                                        >
+                                            Voltar para aguardando pagamento
+                                        </Button>
+                                    )}
+                                    <Button
+                                        size="sm"
+                                        variant="warning"
+                                        className="pg-btn pg-btn-alerta pg-btn-sm"
+                                        onClick={() => cancelarPedido(p)}
+                                    >
+                                        Cancelar pedido
+                                    </Button>
+                                </div>
+                            )}
+                            {expandido && (
+                                <div className="pg-itens">
+                                    {(p.itens || []).map((item) => (
+                                        <div key={item.id_item_pedido} className="pg-itens-linha">
+                                            <span>
+                                                {item.produtos?.nome} · {Number(item.quantidade)}{" "}
+                                                {item.unidades_medida?.sigla} ×{" "}
+                                                {formatarPreco(item.preco_unitario)}
+                                            </span>
+                                            <span>{formatarPreco(item.subtotal)}</span>
+                                        </div>
+                                    ))}
+                                    <div className="pg-nota mt-2">
+                                        Atendido por {p.funcionarios?.nome}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
         </div>
     );
 }

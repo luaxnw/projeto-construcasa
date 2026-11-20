@@ -1,0 +1,107 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500&display=swap");
+
+.fin {
+  --concreto: #15151b;
+  --argamassa: #22222b;
+  --cal: #ece6da;
+  --tijolo: #d32525;
+  --ambar: #f0b429;
+  --suave: #9d9dab;
+
+  background: var(--concreto);
+  color: var(--cal);
+  font-family: "Barlow", system-ui, sans-serif;
+  border-radius: 18px;
+  padding: clamp(1rem, 3vw, 2rem);
+  min-height: 60vh;
+  display: grid;
+  place-items: center;
+}
+
+.fin-card {
+  width: min(560px, 100%);
+  background: var(--argamassa);
+  border-radius: 26px;
+  overflow: hidden;
+  animation: fin-entrar 0.4s ease-out both;
+}
+
+/* faixa de obra, amarelo e preto */
+.fin-faixa {
+  height: 18px;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--ambar) 0 16px,
+    var(--concreto) 16px 32px
+  );
+}
+
+.fin-corpo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.9rem;
+  padding: clamp(1.8rem, 5vw, 3rem) clamp(1.2rem, 4vw, 2.5rem);
+}
+
+.fin-icone {
+  color: var(--ambar);
+}
+
+.fin-pilula {
+  background: var(--ambar);
+  color: var(--concreto);
+  border-radius: 999px;
+  padding: 0.3rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.fin-titulo {
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+  font-size: clamp(2.4rem, 7vw, 3.6rem);
+  font-weight: 600;
+  line-height: 1;
+  margin: 0;
+}
+
+.fin-texto {
+  color: var(--suave);
+  max-width: 38ch;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.fin-botao {
+  margin-top: 0.6rem;
+  background: var(--cal);
+  color: var(--concreto);
+  border-radius: 999px;
+  padding: 0.6rem 1.5rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+.fin-botao:hover {
+  background: var(--tijolo);
+  color: #fff;
+}
+
+.fin-botao:focus-visible {
+  outline: 2px solid var(--ambar);
+  outline-offset: 3px;
+}
+
+@keyframes fin-entrar {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fin-card { animation: none; }
+  .fin-botao { transition: none; }
+}

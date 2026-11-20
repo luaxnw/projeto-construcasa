@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Dropdown, Form, Modal } from "react-bootstrap";
-
+import "../../styles/paginas.css";
 
 const API = "http://localhost:3001";
 
@@ -188,32 +188,37 @@ export default function Produtos() {
     ).length;
 
     return (
-        <div>
-            <h2>Produtos</h2>
+        <div className="pg">
+            <h2 className="pg-titulo">Produtos</h2>
 
-            <div className="d-flex flex-wrap gap-3 my-3">
-                <div className="card-cc p-3 text-center">
-                    <div className="small">Produtos disponíveis:</div>
-                    <div className="fs-3 fw-bold">{disponiveis}</div>
+            <div className="pg-stats">
+                <div className="pg-stat">
+                    <div className="pg-stat-rotulo">Produtos disponíveis</div>
+                    <div className="pg-stat-valor pg-neutro">{disponiveis}</div>
                 </div>
-                <div className="card-cc p-3 text-center">
-                    <div className="small">Produtos indisponíveis:</div>
-                    <div className="fs-3 fw-bold" style={{ color: "#d32525" }}>
-                        {indisponiveis}
-                    </div>
+                <div className="pg-stat">
+                    <div className="pg-stat-rotulo">Produtos indisponíveis</div>
+                    <div className="pg-stat-valor">{indisponiveis}</div>
                 </div>
-                <div className="card-cc p-3 text-center">
-                    <div className="small">Estoque baixo:</div>
-                    <div className="fs-3 fw-bold" style={{ color: "#e0b020" }}>
-                        {estoqueBaixo}
-                    </div>
+                <div className="pg-stat">
+                    <div className="pg-stat-rotulo">Estoque baixo</div>
+                    <div className="pg-stat-valor pg-alerta">{estoqueBaixo}</div>
                 </div>
             </div>
 
-            <h4>Lista de produtos:</h4>
-            <div className="d-flex gap-2 mb-3">
+            <h3 className="pg-subtitulo">Lista de produtos</h3>
+            <div className="pg-barra">
                 <Dropdown autoClose="outside">
-                    <Dropdown.Toggle variant="secondary" size="sm">
+                    <Dropdown.Toggle variant="link" className="pg-filtro">
+                        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                            <path
+                                d="M4 7h10M18 7h2M4 17h2M10 17h10M14 4v6M6 14v6"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                            />
+                        </svg>
                         Filtros: {ROTULOS_ORDEM[ordem]}
                         {nomeCategoriaFiltro && ` · ${nomeCategoriaFiltro}`}
                     </Dropdown.Toggle>
@@ -251,102 +256,120 @@ export default function Produtos() {
                 </Dropdown>
 
                 <Form.Control
+                    className="pg-busca"
                     placeholder="Buscar por nome ou categoria"
+                    aria-label="Buscar produtos"
                     value={busca}
                     onChange={(e) => setBusca(e.target.value)}
                 />
-                <Button variant="danger" onClick={abrirNovo}>
+                <Button
+                    variant="link"
+                    className="pg-novo"
+                    aria-label="Novo produto"
+                    onClick={abrirNovo}
+                >
                     +
                 </Button>
             </div>
 
-            {erro && <div className="text-danger mb-2">{erro}</div>}
-            {!erro && filtrados.length === 0 && <div>Nenhum produto encontrado.</div>}
+            {erro && <div className="pg-aviso" role="alert">{erro}</div>}
+            {!erro && filtrados.length === 0 && (
+                <div className="pg-vazio">Nenhum produto encontrado.</div>
+            )}
 
-            {ordenados.map((p) => (
-                <div
-                    key={p.id_produto}
-                    className="card-cc p-3 mb-2 d-flex justify-content-between align-items-start"
-                >
-                    <div>
-                        <div className="fs-5 fw-bold">{p.nome}</div>
-                        <div className="small">
-                            {p.categoria?.nome} · {p.unidades_medida?.nome} ·{" "}
-                            {formatarPreco(p.preco_venda)} · Estoque {p.qtd_estoque}
-                            {!p.ativo && " · Inativo"}
+            <div className="pg-lista">
+                {ordenados.map((p) => (
+                    <div key={p.id_produto} className="pg-item">
+                        <div>
+                            <div className="pg-item-nome">{p.nome}</div>
+                            <div className="pg-item-sub">
+                                {p.categoria?.nome} · {p.unidades_medida?.nome} ·{" "}
+                                {formatarPreco(p.preco_venda)} · Estoque {p.qtd_estoque}
+                                {!p.ativo && " · Inativo"}
+                            </div>
                         </div>
+
+                        <Dropdown align="end">
+                            <Dropdown.Toggle
+                                variant="link"
+                                className="menu-pontos pg-pontos"
+                                aria-label={`Opções de ${p.nome}`}
+                            >
+                                •••
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                <Dropdown.Item onClick={() => abrirEdicao(p)}>Editar</Dropdown.Item>
+                                <Dropdown.Item onClick={() => excluir(p)}>Excluir</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
                     </div>
+                ))}
+            </div>
 
-                    <Dropdown align="end">
-                        <Dropdown.Toggle
-                            variant="link"
-                            className="text-white text-decoration-none p-0"
-                        >
-                            •••
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            <Dropdown.Item onClick={() => abrirEdicao(p)}>Editar</Dropdown.Item>
-                            <Dropdown.Item onClick={() => excluir(p)}>Excluir</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                </div>
-            ))}
-
-            <Modal show={modalAberto} onHide={() => setModalAberto(false)} centered>
+            <Modal
+                show={modalAberto}
+                onHide={() => setModalAberto(false)}
+                centered
+                className="pg-modal"
+            >
                 <Modal.Header closeButton closeVariant="white">
                     <Modal.Title>
                         {editandoId ? "Editar produto" : "Cadastrar produto"}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form.Label>Nome *</Form.Label>
-                    <Form.Control
-                        className="mb-3"
-                        value={form.nome}
-                        onChange={(e) => setForm({ ...form, nome: e.target.value })}
-                    />
+                    <Form.Group className="mb-3" controlId="produto-nome">
+                        <Form.Label>Nome *</Form.Label>
+                        <Form.Control
+                            value={form.nome}
+                            onChange={(e) => setForm({ ...form, nome: e.target.value })}
+                        />
+                    </Form.Group>
 
-                    <Form.Label>Descrição</Form.Label>
-                    <Form.Control
-                        className="mb-3"
-                        as="textarea"
-                        rows={2}
-                        value={form.descricao}
-                        onChange={(e) => setForm({ ...form, descricao: e.target.value })}
-                    />
+                    <Form.Group className="mb-3" controlId="produto-descricao">
+                        <Form.Label>Descrição</Form.Label>
+                        <Form.Control
+                            as="textarea"
+                            rows={2}
+                            value={form.descricao}
+                            onChange={(e) => setForm({ ...form, descricao: e.target.value })}
+                        />
+                    </Form.Group>
 
-                    <Form.Label>Categoria *</Form.Label>
-                    <Form.Select
-                        className="mb-3"
-                        value={form.id_categoria}
-                        onChange={(e) => setForm({ ...form, id_categoria: e.target.value })}
-                    >
-                        <option value="">Selecione...</option>
-                        {categorias.map((c) => (
-                            <option key={c.id_categoria} value={c.id_categoria}>
-                                {c.nome}
-                            </option>
-                        ))}
-                    </Form.Select>
+                    <Form.Group className="mb-3" controlId="produto-categoria">
+                        <Form.Label>Categoria *</Form.Label>
+                        <Form.Select
+                            value={form.id_categoria}
+                            onChange={(e) => setForm({ ...form, id_categoria: e.target.value })}
+                        >
+                            <option value="">Selecione...</option>
+                            {categorias.map((c) => (
+                                <option key={c.id_categoria} value={c.id_categoria}>
+                                    {c.nome}
+                                </option>
+                            ))}
+                        </Form.Select>
+                    </Form.Group>
 
-                    <Form.Label>Unidade de medida *</Form.Label>
-                    <Form.Select
-                        className="mb-3"
-                        value={form.id_unidade_medida}
-                        onChange={(e) =>
-                            setForm({ ...form, id_unidade_medida: e.target.value })
-                        }
-                    >
-                        <option value="">Selecione...</option>
-                        {unidades.map((u) => (
-                            <option key={u.id_unidade_medida} value={u.id_unidade_medida}>
-                                {u.nome} ({u.sigla})
-                            </option>
-                        ))}
-                    </Form.Select>
+                    <Form.Group className="mb-3" controlId="produto-unidade">
+                        <Form.Label>Unidade de medida *</Form.Label>
+                        <Form.Select
+                            value={form.id_unidade_medida}
+                            onChange={(e) =>
+                                setForm({ ...form, id_unidade_medida: e.target.value })
+                            }
+                        >
+                            <option value="">Selecione...</option>
+                            {unidades.map((u) => (
+                                <option key={u.id_unidade_medida} value={u.id_unidade_medida}>
+                                    {u.nome} ({u.sigla})
+                                </option>
+                            ))}
+                        </Form.Select>
+                    </Form.Group>
 
                     <div className="d-flex gap-3 mb-3">
-                        <div className="flex-fill">
+                        <Form.Group className="flex-fill" controlId="produto-preco">
                             <Form.Label>Preço de venda (R$) *</Form.Label>
                             <Form.Control
                                 type="number"
@@ -357,8 +380,8 @@ export default function Produtos() {
                                     setForm({ ...form, preco_venda: e.target.value })
                                 }
                             />
-                        </div>
-                        <div className="flex-fill">
+                        </Form.Group>
+                        <Form.Group className="flex-fill" controlId="produto-estoque">
                             <Form.Label>Estoque</Form.Label>
                             <Form.Control
                                 type="number"
@@ -369,22 +392,32 @@ export default function Produtos() {
                                     setForm({ ...form, qtd_estoque: e.target.value })
                                 }
                             />
-                        </div>
+                        </Form.Group>
                     </div>
 
                     <Form.Check
                         type="switch"
+                        id="produto-ativo"
                         label="Produto ativo"
                         checked={form.ativo}
                         onChange={(e) => setForm({ ...form, ativo: e.target.checked })}
                     />
-                    {erroForm && <div className="text-danger mt-2">{erroForm}</div>}
+                    {erroForm && <div className="pg-aviso" role="alert">{erroForm}</div>}
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setModalAberto(false)}>
+                    <Button
+                        variant="secondary"
+                        className="pg-btn pg-btn-sec"
+                        onClick={() => setModalAberto(false)}
+                    >
                         Cancelar
                     </Button>
-                    <Button variant="danger" onClick={salvar} disabled={salvando}>
+                    <Button
+                        variant="danger"
+                        className="pg-btn pg-btn-pri"
+                        onClick={salvar}
+                        disabled={salvando}
+                    >
                         {salvando ? "Salvando..." : "Salvar"}
                     </Button>
                 </Modal.Footer>

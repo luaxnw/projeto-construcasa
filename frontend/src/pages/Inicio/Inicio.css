@@ -179,7 +179,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 0.4rem;
-  background: #6a637e;
+  background: var(--cal);
   color: var(--concreto);
   padding: 1.6rem 1.8rem;
 }
@@ -198,7 +198,7 @@
 }
 
 .pn-vendas-valor {
-  color: #a71616;
+  color: var(--tijolo);
   font-weight: 700;
   font-size: clamp(2.8rem, 8vw, 4.6rem);
   line-height: 1.05;
