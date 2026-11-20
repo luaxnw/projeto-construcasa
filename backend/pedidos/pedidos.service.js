@@ -125,8 +125,61 @@ async function criar(dados) {
     return repository.buscarPorId(idPedido);
 }
 
+// Pedido pago e sem entrega pendente (retirada ou já entregue) está finalizado
+function deveFinalizar(statusPagamento, statusEntrega) {
+    return (
+        statusPagamento === "pago" &&
+        (statusEntrega === "nao_se_aplica" || statusEntrega === "entregue")
+    );
+}
+
+async function atualizarPagamento(id, statusPagamento) {
+    await repository.transacao(async (t) => {
+        const pedido = await repository.buscarPedidoTravado(id, t);
+
+        if (!pedido)
+            throw erroNegocio("PEDIDO_NAO_EXISTE");
+
+        if (pedido.status_pedido !== "em_aberto")
+            throw erroNegocio("PEDIDO_NAO_EDITAVEL");
+
+        await repository.atualizarPedido(pedido, {
+            status_pagamento: statusPagamento,
+            status_pedido: deveFinalizar(statusPagamento, pedido.status_entrega)
+                ? "finalizado"
+                : "em_aberto",
+        }, t);
+    });
+
+    return repository.buscarPorId(id);
+}
+
+async function cancelar(id) {
+    await repository.transacao(async (t) => {
+        const pedido = await repository.buscarPedidoTravado(id, t);
+
+        if (!pedido)
+            throw erroNegocio("PEDIDO_NAO_EXISTE");
+
+        if (pedido.status_pedido !== "em_aberto")
+            throw erroNegocio("PEDIDO_NAO_CANCELAVEL");
+
+        // Devolve ao estoque tudo o que o pedido tinha baixado
+        const itens = await repository.buscarItensDoPedido(id, t);
+        for (const item of itens) {
+            await repository.devolverEstoque(item.id_produto, Number(item.quantidade), t);
+        }
+
+        await repository.atualizarPedido(pedido, { status_pedido: "cancelado" }, t);
+    });
+
+    return repository.buscarPorId(id);
+}
+
 module.exports = {
     listar,
     buscarPorId,
     criar,
+    atualizarPagamento,
+    cancelar
 };

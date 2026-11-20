@@ -69,6 +69,30 @@ async function baixarEstoque(produto, quantidade, t) {
     );
 }
 
+// Trava o pedido até o fim da transação, pra duas ações não mexerem nele ao mesmo tempo
+async function buscarPedidoTravado(id, t) {
+    return Pedido.findByPk(id, { transaction: t, lock: t.LOCK.UPDATE });
+}
+
+async function buscarItensDoPedido(idPedido, t) {
+    return ItemPedido.findAll({
+        where: { id_pedido: idPedido },
+        order: [["id_produto", "ASC"]],
+        transaction: t,
+    });
+}
+
+async function devolverEstoque(idProduto, quantidade, t) {
+    return Produto.increment(
+        { qtd_estoque: quantidade },
+        { where: { id_produto: idProduto }, transaction: t }
+    );
+}
+
+async function atualizarPedido(pedido, dados, t) {
+    return pedido.update(dados, { transaction: t });
+}
+
 module.exports = {
     transacao,
     listar,
@@ -79,4 +103,8 @@ module.exports = {
     criarPedido,
     criarItem,
     baixarEstoque,
+    buscarPedidoTravado,
+    buscarItensDoPedido,
+    devolverEstoque,
+    atualizarPedido,
 };

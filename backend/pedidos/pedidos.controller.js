@@ -169,8 +169,69 @@ async function criar(req, res) {
     }
 }
 
+const STATUS_PAGAMENTO = ["aguardando_pagamento", "pago"];
+
+async function atualizarPagamento(req, res) {
+    const id = validarId(req, res);
+    if (id === null) return;
+
+    const status = (req.body || {}).status_pagamento;
+
+    if (!STATUS_PAGAMENTO.includes(status)) {
+        return res.status(400).json({
+            erro: "Dados inválidos",
+            detalhes: [{ campo: "status_pagamento", mensagem: "Informe aguardando_pagamento ou pago" }]
+        });
+    }
+
+    try {
+        const pedido = await services.atualizarPagamento(id, status);
+
+        return res.status(200).json({
+            mensagem: "Status de pagamento atualizado com sucesso",
+            pedido
+        });
+    } catch (erro) {
+        if (erro.message === "PEDIDO_NAO_EXISTE") {
+            return res.status(404).json({ erro: "Pedido não encontrado" });
+        }
+        if (erro.message === "PEDIDO_NAO_EDITAVEL") {
+            return res.status(409).json({ erro: "Só é possível alterar o pagamento de pedidos em aberto." });
+        }
+
+        console.log("Erro ao atualizar pagamento:", erro);
+        return res.status(500).json({ erro: "Não foi possível atualizar o pagamento. Tente novamente." });
+    }
+}
+
+async function cancelar(req, res) {
+    const id = validarId(req, res);
+    if (id === null) return;
+
+    try {
+        const pedido = await services.cancelar(id);
+
+        return res.status(200).json({
+            mensagem: "Pedido cancelado com sucesso",
+            pedido
+        });
+    } catch (erro) {
+        if (erro.message === "PEDIDO_NAO_EXISTE") {
+            return res.status(404).json({ erro: "Pedido não encontrado" });
+        }
+        if (erro.message === "PEDIDO_NAO_CANCELAVEL") {
+            return res.status(409).json({ erro: "Só é possível cancelar pedidos em aberto." });
+        }
+
+        console.log("Erro ao cancelar pedido:", erro);
+        return res.status(500).json({ erro: "Não foi possível cancelar o pedido. Tente novamente." });
+    }
+}
+
 module.exports = {
     listar,
     buscarPorId,
-    criar
+    criar,
+    atualizarPagamento,
+    cancelar
 };
