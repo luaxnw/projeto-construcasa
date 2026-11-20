@@ -16,37 +16,36 @@ async function buscarPorNome(nome) {
     });
 }
 
-async function criar(cliente) {
-    return db.one(
-        `INSERT INTO clientes (nome, email, telefone, endereco)
-        VALUES ($1, $2, $3, $4)
-        RETURNING *`,
-        [cliente.nome, cliente.email, cliente.telefone, cliente.endereco]
-    );
+async function criar(dados) {
+    return Funcionario.create(dados);
 }
 
-async function substituir(id, cliente) {
-    return db.oneOrNone(`UPDATE clientes
-        SET nome = $1, 
-            email = $2,
-            telefone = $3, 
-            endereco = $4
-        WHERE id = $5 
-        RETURNING *`,
-        [cliente.nome, cliente.email, cliente.telefone, cliente.endereco, id]
-    );
+async function substituir(id, dados) {
+    const funcionario = await Funcionario.findByPk(id);
+
+    if (!funcionario)
+        return null;
+
+    await funcionario.update(dados);
+
+    return funcionario;
 }
 
 async function excluir(id) {
-    return db.oneOrNone("DELETE FROM clientes WHERE id = $1 RETURNING *",
-        [id]);
+    const funcionario = await Funcionario.findByPk(id);
+
+    if (!funcionario)
+        return null;
+
+    await funcionario.destroy();
+
+    return funcionario;
 }
 
 module.exports = {
     listar,
-    listarPorID,
-    listarPorEmail,
-    listarPorTelefone,
+    buscarPorId,
+    buscarPorNome,
     criar,
     substituir,
     excluir
