@@ -6,25 +6,27 @@ import Clientes from "./pages/Clientes/Clientes";
 import CadastrarCliente from "./pages/Clientes/CadastrarCliente";
 import Categorias from "./pages/Categorias/Categorias";
 import Produtos from "./pages/Produtos/Produtos";
+import Pedidos from "./pages/Pedidos/Pedidos";
 import NovoPedido from "./pages/Pedidos/NovoPedido";
 
 export default function App() {
   return (
     <AuthProvider>
-        <BrowserRouter>
-            <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route element={<Layout />}>
-                <Route path="/" element={<h2>Início</h2>} />
-                <Route path="/clientes" element={<Clientes />} />
-                <Route path="/clientes/novo" element={<CadastrarCliente />} />
-                <Route path="/clientes/:id/editar" element={<CadastrarCliente />} />
-                <Route path="/categorias" element={<Categorias />} />
-                <Route path="/produtos" element={<Produtos />} />
-                <Route path="/pedidos" element={<NovoPedido />} />
-                </Route>
-            </Routes>
-            </BrowserRouter>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route element={<Layout />}>
+            <Route path="/" element={<h2>Início</h2>} />
+            <Route path="/clientes" element={<Clientes />} />
+            <Route path="/clientes/novo" element={<CadastrarCliente />} />
+            <Route path="/clientes/:id/editar" element={<CadastrarCliente />} />
+            <Route path="/categorias" element={<Categorias />} />
+            <Route path="/produtos" element={<Produtos />} />
+            <Route path="/pedidos" element={<Pedidos />} />
+            <Route path="/pedidos/novo" element={<NovoPedido />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </AuthProvider>
   );
 }
