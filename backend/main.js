@@ -14,12 +14,15 @@ const produtosRouter = require('./produtos/produtos.routes');
 const pedidosRouter = require('./pedidos/pedidos.routes');
 const medidasRouter = require('./unidades-medida/unidade.routes');
 //const funcionariosRoutes = require('./funcionarios/funcionarios-routes');
+const dashboardRouter = require('./dashboard/dashboard.routes');
 
 app.use(clientesRoutes);
 app.use(produtosRouter);
 app.use(medidasRouter);
 app.use(categoriasRouter);
 app.use(pedidosRouter);
+app.use(dashboardRouter);
+
 //app.use(funcionariosRoutes);
 
 app.listen(PORTA, () => {

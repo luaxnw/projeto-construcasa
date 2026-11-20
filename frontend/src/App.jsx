@@ -8,6 +8,7 @@ import Categorias from "./pages/Categorias/Categorias";
 import Produtos from "./pages/Produtos/Produtos";
 import Pedidos from "./pages/Pedidos/Pedidos";
 import NovoPedido from "./pages/Pedidos/NovoPedido";
+import Inicio from "./pages/Inicio/Inicio";
 
 export default function App() {
   return (
@@ -16,7 +17,7 @@ export default function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route element={<Layout />}>
-            <Route path="/" element={<h2>Início</h2>} />
+            <Route path="/" element={<Inicio />} />
             <Route path="/clientes" element={<Clientes />} />
             <Route path="/clientes/novo" element={<CadastrarCliente />} />
             <Route path="/clientes/:id/editar" element={<CadastrarCliente />} />

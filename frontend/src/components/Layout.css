@@ -2,3 +2,5 @@
 .sidebar .nav-link { color: #fff; }
 .sidebar .nav-link.active { background: #d32525; color: #fff; }
 .menu-pontos::after { display: none; }
+
+.d-flex > main { background: #100e14; }

@@ -1,0 +1,448 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap");
+
+.pn {
+  --concreto: #15151b;
+  --argamassa: #22222b;
+  --linha: #33333e;
+  --cal: #ece6da;
+  --tijolo: #d32525;
+  --ambar: #f0b429;
+  --suave: #9d9dab;
+  --raio: 26px;
+
+  background: var(--concreto);
+  color: var(--cal);
+  font-family: "Barlow", system-ui, sans-serif;
+  border-radius: 18px;
+  padding: clamp(1rem, 3vw, 2rem);
+}
+
+.pn h1,
+.pn h2,
+.pn .pn-numero {
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+  letter-spacing: 0.01em;
+}
+
+/* ---------- topo ---------- */
+.pn-topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.pn-titulo {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 600;
+  line-height: 1;
+  margin: 0;
+}
+
+.pn-data {
+  color: var(--suave);
+  margin: 0.4rem 0 0;
+}
+
+.pn-data::first-letter {
+  text-transform: uppercase;
+}
+
+.pn-atualiza {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--suave);
+  font-size: 0.85rem;
+}
+
+.pn-botao {
+  background: var(--argamassa);
+  color: var(--cal);
+  border: 0;
+  border-radius: 999px;
+  padding: 0.5rem 1.2rem;
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.pn-botao:hover {
+  background: var(--tijolo);
+  color: #fff;
+}
+
+.pn-botao:focus-visible {
+  outline: 2px solid var(--ambar);
+  outline-offset: 2px;
+}
+
+.pn-aviso {
+  margin: 1rem 0 0;
+  padding: 0.7rem 1rem;
+  border-left: 4px solid var(--tijolo);
+  background: rgba(211, 37, 37, 0.12);
+  border-radius: 12px;
+}
+
+.pn-vazio {
+  color: var(--suave);
+  padding: 1rem 0;
+}
+
+/* ---------- grade ---------- */
+.pn-grade {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: clamp(1.25rem, 3vw, 2rem);
+  margin-top: 2rem;
+}
+
+.pn-coluna {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+.pn h2 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin: 0 0 0.8rem;
+}
+
+.pn-coluna > h2 {
+  margin-bottom: 0;
+}
+
+/* ---------- cartão base ---------- */
+.pn-card {
+  position: relative;
+  border-radius: var(--raio);
+  background: var(--argamassa);
+  padding: 1.3rem 1.4rem;
+  animation: entrar 0.4s ease-out both;
+  animation-delay: calc(var(--i, 0) * 60ms);
+  transition: transform 0.18s ease;
+}
+
+.pn-card:hover {
+  transform: translateY(-2px);
+}
+
+.pn-nota {
+  font-size: 0.9rem;
+  color: var(--suave);
+}
+
+/* ---------- botão de seta (link que cobre o cartão) ---------- */
+.pn-seta {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--cal);
+  color: var(--concreto);
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s, transform 0.15s;
+}
+
+.pn-seta::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--raio);
+}
+
+.pn-seta:focus-visible {
+  outline: none;
+}
+
+.pn-seta:focus-visible::after {
+  outline: 2px solid var(--ambar);
+  outline-offset: 3px;
+}
+
+.pn-card:hover .pn-seta {
+  background: var(--tijolo);
+  color: #fff;
+  transform: rotate(45deg);
+}
+
+/* ---------- vendas ---------- */
+.pn-vendas {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  background: #6a637e;
+  color: var(--concreto);
+  padding: 1.6rem 1.8rem;
+}
+
+.pn-vendas:hover {
+  transform: none;
+}
+
+.pn-pilula {
+  background: var(--concreto);
+  color: var(--cal);
+  border-radius: 999px;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.pn-vendas-valor {
+  color: #a71616;
+  font-weight: 700;
+  font-size: clamp(2.8rem, 8vw, 4.6rem);
+  line-height: 1.05;
+  margin-top: 0.5rem;
+}
+
+.pn-vendas .pn-nota {
+  color: rgba(21, 21, 27, 0.7);
+}
+
+/* ---------- pedidos ---------- */
+.pn-tiles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.pn-tile {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.4rem;
+  min-height: 150px;
+}
+
+.pn-tile-rotulo {
+  font-weight: 500;
+}
+
+.pn-tile-base {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.pn-tile .pn-numero {
+  font-size: 3.4rem;
+  font-weight: 600;
+  line-height: 0.9;
+  font-variant-numeric: tabular-nums;
+}
+
+.pn-tom-escuro {
+  background: var(--argamassa);
+}
+
+.pn-tom-tijolo {
+  background: var(--tijolo);
+  color: #fff;
+}
+
+.pn-tom-ambar {
+  background: var(--ambar);
+  color: var(--concreto);
+}
+
+.pn-tom-vazio {
+  background: transparent;
+  border: 1.5px dashed #5d5d6b;
+  padding: calc(1.3rem - 1.5px) calc(1.4rem - 1.5px);
+}
+
+/* No fundo vermelho e âmbar a seta fica escura para manter o contraste */
+.pn-tom-tijolo .pn-seta,
+.pn-tom-ambar .pn-seta {
+  background: var(--concreto);
+  color: var(--cal);
+}
+
+.pn-tom-tijolo:hover .pn-seta,
+.pn-tom-ambar:hover .pn-seta {
+  background: var(--cal);
+  color: var(--concreto);
+}
+
+/* ---------- estoque ---------- */
+.pn-estoque-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.9rem;
+}
+
+.pn-estoque h2 {
+  margin: 0;
+}
+
+.pn-barra {
+  display: flex;
+  height: 22px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--concreto);
+  gap: 3px;
+}
+
+.pn-barra-trecho {
+  min-width: 8px;
+  transition: width 0.5s ease;
+}
+
+.pn-lista {
+  list-style: none;
+  padding: 0;
+  margin: 1.1rem 0 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.pn-lista li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.pn-lista .pn-qtd {
+  margin-left: auto;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.pn-amostra {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.pn-cor-cal { background: var(--cal); }
+.pn-cor-ambar { background: var(--ambar); }
+.pn-cor-tijolo { background: var(--tijolo); }
+
+.pn-alerta-estoque {
+  display: inline-block;
+  margin: 1.1rem 0 0;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(240, 180, 41, 0.14);
+  color: var(--ambar);
+  font-size: 0.95rem;
+}
+
+/* ---------- cadastros ---------- */
+.pn-cadastros {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.pn-cadastro {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-radius: 999px;
+  padding: 0.8rem 0.8rem 0.8rem 0.8rem;
+}
+
+.pn-cadastro .pn-seta {
+  border-radius: 50%;
+}
+
+.pn-cadastro .pn-seta::after {
+  border-radius: 999px;
+}
+
+.pn-cadastro .pn-seta:focus-visible::after {
+  outline-offset: 2px;
+}
+
+.pn-bolha {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--cal);
+  color: var(--concreto);
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.pn-cadastro-texto {
+  flex: 1;
+  min-width: 0;
+}
+
+.pn-cadastro-nome {
+  font-weight: 600;
+}
+
+/* Funcionários não tem página própria: sem seta, sem efeito de clique */
+.pn-cadastro:not(:has(.pn-seta)) {
+  padding-right: 1.4rem;
+}
+
+.pn-cadastro:not(:has(.pn-seta)):hover {
+  transform: none;
+}
+
+/* ---------- animação ---------- */
+@keyframes entrar {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- telas menores ---------- */
+@media (max-width: 1100px) {
+  .pn-tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .pn-grade {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .pn {
+    --raio: 22px;
+  }
+  .pn-card {
+    padding: 1.1rem 1.1rem;
+  }
+  .pn-tile {
+    min-height: 130px;
+  }
+  .pn-tile .pn-numero {
+    font-size: 2.8rem;
+  }
+  .pn-tom-vazio {
+    padding: calc(1.1rem - 1.5px);
+  }
+  .pn-cadastro {
+    padding: 0.7rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pn-card { animation: none; transition: none; }
+  .pn-card:hover { transform: none; }
+  .pn-card:hover .pn-seta { transform: none; }
+  .pn-barra-trecho { transition: none; }
+}
