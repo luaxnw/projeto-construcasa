@@ -54,13 +54,13 @@ async function buscarPorNome(req, res) {
 }
 
 async function buscarPorCpf(req, res) {
-    try {
-        const cpf = req.body.cpf;
-        if (!cpf) {
-            return res.status(400)
-                .json({ cpf: "obrigatório" });
-        }
+    const cpf = req.body.cpf;
+    if (!cpf) {
+        return res.status(400)
+            .json({ cpf: "obrigatório" });
+    }
 
+    try {
         const funcionario = await service.buscarPorCpf(cpf);
         return res.status(200).json(funcionario);
 
@@ -74,4 +74,138 @@ async function buscarPorCpf(req, res) {
     }
 }
 
+async function criar(req, res) {
+    const { nome, cpf, senha_hash, cargo } = req.body;
 
+    if (!nome || !cpf || !senha_hash || !cargo) {
+        return res.status(400).json({
+            erro: "Dados inválidos",
+            detalhes: [
+                !nome && { campo: "nome", mensagem: "Obrigatório" },
+                !cpf && { campo: "cpf", mensagem: "Obrigatório" },
+                !senha_hash && { campo: "senha", mensagem: "Obrigatório" },
+                !cargo && { campo: "cargo", mensagem: "Obrigatório" }
+            ].filter(Boolean)
+        });
+    }
+
+    try {
+        const funcionario = await service.criar({
+            nome,
+            cpf,
+            senha_hash,
+            cargo
+        });
+
+        return res.status(201).json({
+            mensagem: "Funcionário cadastrada com sucesso",
+            funcionario
+        });
+
+    } catch (erro) {
+        if (erro.message === "NOME_JA_EXISTE")
+            return res.status(409).json({
+                erro: `Funcionário de nome ${nome} já cadastrada no sistema. Funcionário não salvo`
+            });
+        if (erro.message === "CPF_JA_EXISTE")
+            return res.status(409).json({
+                erro: `Funcionário de CPF ${cpf} já cadastrado no sistema. Funcionário não salvo`
+            });
+
+        return res.status(500).json({
+            erro: erro.message
+        });
+    }
+}
+
+async function substituir(req, res) {
+    const id = parseInt(req.params.id);
+
+    if (!Number.isInteger(id) || id <= 0)
+        return res.status(400).json({
+            erro: "ID inválido"
+        });
+
+    const { nome, cpf, senha_hash, cargo } = req.body;
+
+    if (!nome || !cpf || !senha_hash || !cargo) {
+        return res.status(400).json({
+            erro: "Dados inválidos",
+            detalhes: [
+                !nome && { campo: "nome", mensagem: "Obrigatório" },
+                !cpf && { campo: "cpf", mensagem: "Obrigatório" },
+                !senha_hash && { campo: "senha", mensagem: "Obrigatório" },
+                !cargo && { campo: "cargo", mensagem: "Obrigatório" }
+            ].filter(Boolean)
+        });
+    }
+
+    try {
+        const funcionario = await service.substituir(id, {
+            nome,
+            cpf,
+            senha_hash,
+            cargo
+        });
+
+        return res.status(200).json({
+            mensagem: "Funcionário atualizado com sucesso.",
+            funcionario
+        });
+
+    } catch (erro) {
+        if (erro.message === "NOME_JA_EXISTE")
+            return res.status(409).json({
+                erro: `Funcionário de nome ${nome} já cadastrado no sistema. Funcionário não atualizado.`
+            });
+        
+        if (erro.message === "CPF_JA_EXISTE")
+            return res.status(409).json({
+                erro: `Funcionário de CPF ${cpf} já cadastrado no sistema. Funcionário não atualizado.`
+            })
+
+        if (erro.message === "FUNCIONARIO_NAO_EXISTE")
+            return res.status(404).json({
+                erro: `Funcionário com ID ${id} não existe no sistema.`
+            });
+
+        return res.status(500).json({
+            erro: erro.message
+        });
+    }
+}
+
+async function excluir(req, res) {
+    const id = parseInt(req.params.id);
+
+    if (!Number.isInteger(id) || id <= 0)
+        return res.status(400).json({
+            erro: "ID inválido"
+        });
+
+    try {
+        await service.deletar(id);
+
+        return res.status(204).send();
+
+    } catch (erro) {
+        if (erro.message === "FUNCIONARIO_NAO_EXISTE")
+            return res.status(404).json({
+                erro: `Funcionário de ID ${id} não existe`
+            });
+
+        return res.status(500).json({
+            erro: erro.message
+        });
+    }
+}
+
+module.exports = {
+    listar,
+    buscarPorId,
+    buscarPorNome,
+    buscarPorCpf,
+    criar,
+    substituir,
+    excluir
+};
