@@ -108,35 +108,36 @@ const verificarPermissaoMiddleware = (descricaoPermissao) => {
 };
 
 // Middleware para verificar JWT e permissão específica
-const requirePermissao = (descricaoPermissao) => {
-    return [
-        requireJWTAuth,
-        async (req, res, next) => {
-            try {
-                // req.user é definido pelo requireJWTAuth
-                if (!req.user) {
-                    return res.status(401).json({ message: "Usuário não autenticado." });
-                }
-
-                const email = req.user.email;
-                const temPermissao = await authService.verificarPermissaoPorDescricao(
-                    email,
-                    descricaoPermissao,
-                );
-
-                if (!temPermissao) {
-                    return res.status(403).json({
-                        message: `Acesso negado. Permissão necessária: ${descricaoPermissao}`,
-                    });
-                }
-
-                next();
-            } catch (error) {
-                console.error("Erro ao verificar permissão:", error);
-                return res.status(500).json({ message: "Erro interno do servidor." });
+const requirePermissao = (...rolesPermitidas) => {
+    return (req, res, next) => {
+        try {
+            if (!req.user) {
+                return res.status(401).json({
+                    erro: "Funcionário não autenticado"
+                });
             }
-        },
-    ];
+
+            const roleFuncionario = req.user.role?.nome?.toUpperCase();
+
+            const possuiPermissao = rolesPermitidas
+                .map(role => role.toUpperCase())
+                .includes(roleFuncionario);
+
+            if (!possuiPermissao) {
+                return res.status(403).json({
+                    erro: "Você não possui permissão para acessar este recurso"
+                });
+            }
+
+            next();
+
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({
+                erro: "Erro interno do servidor"
+            });
+        }
+    };
 };
 
 module.exports = {
