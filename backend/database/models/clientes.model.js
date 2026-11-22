@@ -14,7 +14,7 @@ const Cliente = sequelize.define(
             allowNull: false,
         },
         cpf_cnpj: {
-            type: DataTypes.STRING(14),
+            type: DataTypes.STRING(20),
             unique: true,
         },
         email: {
