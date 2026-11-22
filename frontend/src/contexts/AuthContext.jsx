@@ -1,38 +1,40 @@
+
 import { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext(null);
 
-// TEMPORÁRIO: usuário de teste pra ver as telas sem fazer login.
-// Apague quando o login de verdade estiver pronto.
-const USUARIO_TESTE = { nome: "João Silva", cargo: "Funcionário" };
-
 export function AuthProvider({ children }) {
-  const [usuario, setUsuario] = useState(() => {
-    try {
-      const salvo = localStorage.getItem("usuario");
-      return salvo ? JSON.parse(salvo) : USUARIO_TESTE;
-    } catch {
-      return USUARIO_TESTE;
+    const [usuario, setUsuario] = useState(() => {
+        try {
+            const token = localStorage.getItem("token");
+            const salvo = localStorage.getItem("usuario");
+
+            if (!token || !salvo) return null;
+
+            return JSON.parse(salvo);
+        } catch {
+            return null;
+        }
+    });
+
+    function login(dados) {
+        setUsuario(dados);
+        localStorage.setItem("usuario", JSON.stringify(dados));
     }
-  });
 
-  function login(dados) {
-    setUsuario(dados);
-    localStorage.setItem("usuario", JSON.stringify(dados));
-  }
+    function logout() {
+        setUsuario(null);
+        localStorage.removeItem("usuario");
+        localStorage.removeItem("token");
+    }
 
-  function logout() {
-    setUsuario(null);
-    localStorage.removeItem("usuario");
-  }
-
-  return (
-    <AuthContext.Provider value={{ usuario, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+    return (
+        <AuthContext.Provider value={{ usuario, login, logout }}>
+            {children}
+        </AuthContext.Provider>
+    );
 }
 
 export function useAuth() {
-  return useContext(AuthContext);
+    return useContext(AuthContext);
 }

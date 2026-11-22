@@ -6,7 +6,7 @@ const router = express.Router();
 // ROTAS    
 
 router.get("/clientes", controller.listar);
-router.get("/clientes/:id", controller.listarPorID)
+router.get("/clientes/:id", controller.buscarPorId)
 
 router.post("/clientes", controller.criar);
 

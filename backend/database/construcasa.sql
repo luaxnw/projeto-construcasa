@@ -1,18 +1,8 @@
-BEGIN;
-
 CREATE TABLE IF NOT EXISTS roles (
     id_role     SERIAL PRIMARY KEY,
     nome        VARCHAR(50) NOT NULL UNIQUE,
     created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE TABLE IF NOT EXISTS formas_pagamento (
-    id_forma_pagamento  SERIAL PRIMARY KEY,
-    nome                VARCHAR(50) NOT NULL UNIQUE,
-    ativa               BOOLEAN NOT NULL DEFAULT TRUE,
-    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS unidades_medida (
@@ -38,7 +28,7 @@ CREATE TABLE IF NOT EXISTS enderecos (
 CREATE TABLE IF NOT EXISTS clientes (
     id_cliente   SERIAL PRIMARY KEY,
     nome         VARCHAR(100) NOT NULL,
-    cpf_cnpj     VARCHAR(14)  UNIQUE,                 
+    cpf_cnpj     VARCHAR(20)  UNIQUE,                 
     email        VARCHAR(100) UNIQUE,                 
     telefone     VARCHAR(20)  NOT NULL UNIQUE,        
     id_endereco  INT REFERENCES enderecos(id_endereco) ON DELETE SET NULL,
@@ -49,7 +39,7 @@ CREATE TABLE IF NOT EXISTS clientes (
 CREATE TABLE IF NOT EXISTS funcionarios (
     id_funcionario  SERIAL PRIMARY KEY,
     nome            VARCHAR(100) NOT NULL,
-    cpf             VARCHAR(11)  NOT NULL UNIQUE,   
+    cpf             VARCHAR(20)  NOT NULL UNIQUE,   
     senha_hash      VARCHAR(255) NOT NULL,
     cargo           VARCHAR(50)  NOT NULL,            
     id_role         INT NOT NULL REFERENCES roles(id_role),  
@@ -141,20 +131,9 @@ CREATE TABLE IF NOT EXISTS entregas (
     updated_at     TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-INSERT INTO unidades_medida (nome, sigla) VALUES
-    ('Unidade', 'un'),
-    ('Quilograma', 'kg'),
-    ('Saco', 'sc'),
-    ('Metro', 'm'),
-    ('Metro quadrado', 'm²'),
-    ('Metro cúbico', 'm³'),
-    ('Litro', 'l'),
-    ('Lata', 'lt'),
-    ('Galão', 'gl'),
-    ('Caixa', 'cx'),
-    ('Barra', 'br'),
-    ('Rolo', 'rl'),
-    ('Pacote', 'pct')
+INSERT INTO roles (nome)
+VALUES
+    ('ADMIN'),
+    ('VENDEDOR')
 ON CONFLICT (nome) DO NOTHING;
 
-COMMIT;

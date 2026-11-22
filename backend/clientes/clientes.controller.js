@@ -10,7 +10,7 @@ async function listar(req, res) {
     }
 }
 
-async function listarPorID(req, res) {
+async function buscarPorId(req, res) {
     const id = Number(req.params.id);
 
     if (!Number.isInteger(id) || id <= 0) {
@@ -20,7 +20,7 @@ async function listarPorID(req, res) {
     }
 
     try {
-        const cliente = await services.listarPorID(id);
+        const cliente = await services.buscarPorId(id);
 
         if (!cliente) {
             console.log(`Cliente de ${id} não localizado`);
@@ -166,7 +166,7 @@ async function excluir(req, res) {
 
 module.exports = {
     listar,
-    listarPorID,
+    buscarPorId,
     criar,
     substituir,
     excluir

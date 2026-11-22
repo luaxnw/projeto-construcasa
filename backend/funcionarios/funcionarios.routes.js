@@ -1,16 +1,19 @@
 const express = require("express");
 const controller = require("./funcionarios.controller");
 
+const { requireJWTAuth } = require("../auth/auth.config");
+const { requirePermissao } = require("../auth/auth.config");
+
 const router = express.Router();
 
-router.get("/funcionarios", controller.listar);
+router.get("/funcionarios", requireJWTAuth, requirePermissao("ADMIN"), controller.listar);
 
-router.get("/funcionarios/:id", controller.buscarPorId);
+router.get("/funcionarios/:id", requireJWTAuth, requirePermissao("ADMIN"), controller.buscarPorId);
 
-router.post("/funcionarios", controller.criar);
+router.post("/funcionarios", requireJWTAuth, requirePermissao("ADMIN"), controller.criar);
 
-router.put("/funcionarios/:id", controller.substituir);
+router.put("/funcionarios/:id", requireJWTAuth, requirePermissao("ADMIN"), controller.substituir);
 
-router.delete("/funcionarios/:id", controller.excluir);
+router.delete("/funcionarios/:id", requireJWTAuth, requirePermissao("ADMIN"), controller.excluir);
 
 module.exports = router;
