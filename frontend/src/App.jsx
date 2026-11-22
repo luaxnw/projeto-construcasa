@@ -1,4 +1,3 @@
-
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Layout from "./components/Layout";
@@ -13,6 +12,8 @@ import Categorias from "./pages/Categorias/Categorias";
 import Produtos from "./pages/Produtos/Produtos";
 import Pedidos from "./pages/Pedidos/Pedidos";
 import NovoPedido from "./pages/Pedidos/NovoPedido";
+import Funcionarios from "./pages/Funcionarios/Funcionarios";
+import CadastrarFuncionario from "./pages/Funcionarios/CadastrarFuncionario";
 import Inicio from "./pages/Inicio/Inicio";
 import Financeiro from "./pages/Financeiro/Financeiro";
 
@@ -30,6 +31,9 @@ export default function App() {
                             <Route path="/clientes/:id/editar" element={<CadastrarCliente />} />
                             <Route path="/categorias" element={<Categorias />} />
                             <Route path="/produtos" element={<Produtos />} />
+                            <Route path="/funcionarios" element={<Funcionarios />} />
+                            <Route path="/funcionarios/novo" element={<CadastrarFuncionario />} />
+                            <Route path="/funcionarios/:id/editar" element={<CadastrarFuncionario />} />
                             <Route path="/pedidos" element={<Pedidos />} />
                             <Route path="/pedidos/novo" element={<NovoPedido />} />
                             <Route path="/financeiro" element={<Financeiro />} />
