@@ -6,6 +6,11 @@ const app = express();
 const PORTA = 3001;
 const cors = require('cors');
 const passport = require('passport');
+const path = require('path');
+
+require('dotenv').config({
+    path: path.resolve(__dirname, '.env')
+});
 
 const {
     configureJwtStrategy
