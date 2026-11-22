@@ -137,3 +137,40 @@ VALUES
     ('VENDEDOR')
 ON CONFLICT (nome) DO NOTHING;
 
+
+-- Dados iniciais para a operação do sistema
+
+INSERT INTO unidades_medida (nome, sigla)
+VALUES
+    ('Unidade', 'un'),
+    ('Quilograma', 'kg'),
+    ('Saco', 'saco'),
+    ('Metro cúbico', 'm³'),
+    ('Metro', 'm'),
+    ('Litro', 'l'),
+    ('Lata', 'lata'),
+    ('Caixa', 'cx')
+ON CONFLICT DO NOTHING;
+
+-- Usuários iniciais (senhas com hash bcrypt)
+-- Administrador: CPF 00000000000, senha admin123
+-- Vendedor: CPF 11111111111, senha vendedor123
+INSERT INTO funcionarios (nome, cpf, senha_hash, cargo, id_role, ativo)
+VALUES
+    (
+        'Administrador',
+        '00000000000',
+        '$2b$10$T4TkibS/EXZvbEhB8mUyn.C/huVGShnOypSlZi9VQvRH4u8I23Fqa',
+        'Administrador',
+        (SELECT id_role FROM roles WHERE nome = 'ADMIN'),
+        TRUE
+    ),
+    (
+        'Vendedor',
+        '11111111111',
+        '$2b$10$DHlfkTK3.Vws/o68KPJ22ubVFSyCWIMOMl4eCd8j2N3/v7RGMD9RK',
+        'Vendedor',
+        (SELECT id_role FROM roles WHERE nome = 'VENDEDOR'),
+        TRUE
+    )
+ON CONFLICT (cpf) DO NOTHING;
