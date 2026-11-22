@@ -1,4 +1,5 @@
 const repository = require("./funcionarios.repository");
+const bcrypt = require("bcrypt");
 
 async function listar() {
     return repository.listar();
@@ -38,24 +39,34 @@ async function criar(dados) {
     if (await repository.buscarPorCpf(dados.cpf)) // regra: não deixa cadastrar com cpf repetido
         throw new Error("CPF_JA_EXISTE");
 
-    return repository.criar(dados);
+    const senha_hash = await bcrypt.hash(dados.senha,10);
+
+    return repository.criar({
+        nome: dados.nome,
+        cpf: dados.cpf,
+        senha_hash,
+        cargo: dados.cargo,
+        id_role: dados.id_role
+    });
 }
 
 async function substituir(id, dados) {
-    const funcionarioNome = repository.buscarPorNome(dados.nome);
+    const funcionarioAtual = await repository.buscarPorId(id);
+
+    if (!funcionarioAtual)
+        throw new Error("FUNCIONARIO_NAO_EXISTE");
+
+    const funcionarioNome = await repository.buscarPorNome(dados.nome);
 
     if (funcionarioNome && funcionarioNome.id !== Number(id))
-        throw new Error("NOME_JA_EXISTE")
+        throw new Error("NOME_JA_EXISTE");
 
-    const funcionarioCpf = repository.buscarPorCpf(dados.cpf);
+    const funcionarioCpf = await repository.buscarPorCpf(dados.cpf);
 
     if (funcionarioCpf && funcionarioCpf.id !== Number(id))
-        throw new Error("CPF_JA_EXISTE")
+        throw new Error("CPF_JA_EXISTE");
 
     const funcionarioAtualizado = await repository.substituir(id, dados);
-
-    if (!funcionarioAtualizado)
-        throw new Error("FUNCIONARIO_NAO_EXISTE");
 
     return funcionarioAtualizado;
 }

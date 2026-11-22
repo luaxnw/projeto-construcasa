@@ -20,7 +20,7 @@ async function buscarPorId(req, res) {
         });
 
     try {
-        const funcionario = service.buscarPorId(id);
+        const funcionario = await service.buscarPorId(id);
         return res.status(200).json(funcionario);
     } catch (erro) {
         if (erro.message === "FUNCIONARIO_NAO_EXISTE")
@@ -75,26 +75,30 @@ async function buscarPorCpf(req, res) {
 }
 
 async function criar(req, res) {
-    const { nome, cpf, senha_hash, cargo } = req.body;
+    const { nome, cpf, senha, cargo, id_role } = req.body;
 
-    if (!nome || !cpf || !senha_hash || !cargo) {
+    if (!nome || !cpf || !senha || !cargo || !id_role) {
         return res.status(400).json({
             erro: "Dados inválidos",
             detalhes: [
                 !nome && { campo: "nome", mensagem: "Obrigatório" },
                 !cpf && { campo: "cpf", mensagem: "Obrigatório" },
-                !senha_hash && { campo: "senha", mensagem: "Obrigatório" },
-                !cargo && { campo: "cargo", mensagem: "Obrigatório" }
+                !senha && { campo: "senha", mensagem: "Obrigatório" },
+                !cargo && { campo: "cargo", mensagem: "Obrigatório" },
+                !id_role && { campo: "role", mensagem: "Obrigatório" }
             ].filter(Boolean)
         });
     }
 
+    const cpfNormalizado = cpf.replace(/[.\-/]/g, ""); // normaliza cpf
+
     try {
         const funcionario = await service.criar({
             nome,
-            cpf,
-            senha_hash,
-            cargo
+            cpf: cpfNormalizado,
+            senha,
+            cargo,
+            id_role: Number(id_role)
         });
 
         return res.status(201).json({
@@ -126,26 +130,30 @@ async function substituir(req, res) {
             erro: "ID inválido"
         });
 
-    const { nome, cpf, senha_hash, cargo } = req.body;
+    const { nome, cpf, senha, cargo, id_role } = req.body;
 
-    if (!nome || !cpf || !senha_hash || !cargo) {
+    if (!nome || !cpf || !senha || !cargo || !id_role) {
         return res.status(400).json({
             erro: "Dados inválidos",
             detalhes: [
                 !nome && { campo: "nome", mensagem: "Obrigatório" },
                 !cpf && { campo: "cpf", mensagem: "Obrigatório" },
-                !senha_hash && { campo: "senha", mensagem: "Obrigatório" },
-                !cargo && { campo: "cargo", mensagem: "Obrigatório" }
+                !senha && { campo: "senha", mensagem: "Obrigatório" },
+                !cargo && { campo: "cargo", mensagem: "Obrigatório" },
+                !id_role && { campo: "role", mensagem: "Obrigatório" }
             ].filter(Boolean)
         });
     }
 
+    const cpfNormalizado = cpf.replace(/[.\-/]/g, ""); // normaliza cpf
+
     try {
         const funcionario = await service.substituir(id, {
             nome,
-            cpf,
-            senha_hash,
-            cargo
+            cpf: cpfNormalizado,
+            senha,
+            cargo,
+            id_role: Number(id_role)
         });
 
         return res.status(200).json({
@@ -158,7 +166,7 @@ async function substituir(req, res) {
             return res.status(409).json({
                 erro: `Funcionário de nome ${nome} já cadastrado no sistema. Funcionário não atualizado.`
             });
-        
+
         if (erro.message === "CPF_JA_EXISTE")
             return res.status(409).json({
                 erro: `Funcionário de CPF ${cpf} já cadastrado no sistema. Funcionário não atualizado.`
