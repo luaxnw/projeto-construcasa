@@ -27,7 +27,12 @@ async function login(req, res) {
 
         return res.status(200).json({
             message: "Login successful",
-            token: token
+            token: token,
+            usuario: {
+                id: resultado.usuario.id_funcionario,
+                nome: resultado.usuario.nome,
+                role: resultado.usuario.role?.nome
+            }
         });
 
     } catch (erro) {
