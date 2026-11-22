@@ -1,0 +1,1 @@
+const funcionariosRepository = require('../funcionarios/funcionarios.repository');
