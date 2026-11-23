@@ -34,9 +34,6 @@ export default function Login() {
 
             const dados = await resposta.json();
 
-            console.log("Status:", resposta.status);
-console.log("Resposta do backend:", dados);
-
             if (!resposta.ok) {
                 throw new Error(
                     dados.mensagem || dados.erro || "Falha no login"
