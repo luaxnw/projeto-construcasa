@@ -1,6 +1,48 @@
-import { useState } from 'react'
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
+import Layout from "./components/Layout";
+import PrivateRoute from "./components/PrivateRoute";
 
-export default function App(){
+import Login from "./pages/Login/Login";
+import { AuthProvider } from "./contexts/AuthContext";
 
+import Clientes from "./pages/Clientes/Clientes";
+import CadastrarCliente from "./pages/Clientes/CadastrarCliente";
+import Categorias from "./pages/Categorias/Categorias";
+import Produtos from "./pages/Produtos/Produtos";
+import Pedidos from "./pages/Pedidos/Pedidos";
+import NovoPedido from "./pages/Pedidos/NovoPedido";
+import Funcionarios from "./pages/Funcionarios/Funcionarios";
+import CadastrarFuncionario from "./pages/Funcionarios/CadastrarFuncionario";
+import Inicio from "./pages/Inicio/Inicio";
+import Financeiro from "./pages/Financeiro/Financeiro";
+
+export default function App() {
+    return (
+        <AuthProvider>
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route element={<PrivateRoute />}>
+                        <Route element={<Layout />}>
+                            <Route path="/" element={<Inicio />} />
+                            <Route path="/clientes" element={<Clientes />} />
+                            <Route path="/clientes/novo" element={<CadastrarCliente />} />
+                            <Route path="/clientes/:id/editar" element={<CadastrarCliente />} />
+                            <Route path="/categorias" element={<Categorias />} />
+                            <Route path="/produtos" element={<Produtos />} />
+                            <Route path="/funcionarios" element={<Funcionarios />} />
+                            <Route path="/funcionarios/novo" element={<CadastrarFuncionario />} />
+                            <Route path="/funcionarios/:id/editar" element={<CadastrarFuncionario />} />
+                            <Route path="/pedidos" element={<Pedidos />} />
+                            <Route path="/pedidos/novo" element={<NovoPedido />} />
+                            <Route path="/financeiro" element={<Financeiro />} />
+                        </Route>
+                    </Route>
+                    <Route path="*" element={<Navigate to="/" replace />} />
+
+                </Routes>
+            </BrowserRouter>
+        </AuthProvider>
+    );
 }

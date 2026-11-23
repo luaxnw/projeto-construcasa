@@ -1,0 +1,70 @@
+.sidebar { width: 220px; flex: 0 0 220px; background: #0e0d13 }
+.sidebar .nav-link { color: #fff; }
+.sidebar .nav-link.active { background: #d32525; color: #fff; }
+.menu-pontos::after { display: none; }
+
+/* o conteúdo nunca empurra o menu: pode encolher, o menu não.
+   (se você usou outra cor de fundo, troque aqui) */
+main { min-width: 0; background: #0c0c10; }
+
+/* ---------- menu fixo na altura da tela ---------- */
+/* "aside" garante que só vale pro menu do computador, não pro Offcanvas do celular */
+aside.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100dvh;
+  align-self: flex-start;
+  overflow-y: auto;
+}
+
+/* ---------- botão de ocultar / mostrar o menu ---------- */
+.menu-toggle {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.menu-toggle:hover { background: rgba(255, 255, 255, 0.1); }
+.menu-toggle:focus-visible { outline: 2px solid #f0b429; outline-offset: 2px; }
+
+/* o botão de "mostrar" só existe no computador; no celular já tem o ☰ Menu */
+.menu-toggle--mostrar {
+  display: none;
+  position: sticky;
+  top: 0.75rem;
+  z-index: 1020;
+  margin-bottom: 0.75rem;
+  background: #22222b;
+}
+
+@media (min-width: 992px) {
+  .menu-toggle--mostrar { display: grid; }
+}
+
+/* ---------- celular: o botão ☰ Menu acompanha a rolagem ---------- */
+.barra-menu {
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+  margin: -1rem -1rem 1rem;
+  padding: 0.6rem 1rem;
+  background: #0c0c10;
+}
+
+/* ---------- logo ---------- */
+.logo-menu {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  margin: 0 auto;
+  object-fit: contain;
+}

@@ -1,0 +1,56 @@
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: #121212;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.login-form {
+    width: 100%;
+    max-width: 400px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    padding: 32px;
+    background-color: #1e1e1e;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    box-sizing: border-box;
+}
+
+.login-form h2 {
+    color: #ffffff;
+    text-align: center;
+    margin: 0 0 12px;
+}
+
+.login-field label {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.login-form .MuiButton-root {
+    background-color: #e53935;
+    color: #ffffff;
+
+    padding: 12px;
+    border-radius: 8px;
+
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: none;
+
+    box-shadow: none;
+}
+
+.login-form .MuiButton-root:hover {
+    background-color: #c62828;
+    box-shadow: 0 4px 12px rgba(229, 57, 53, 0.3);
+}
