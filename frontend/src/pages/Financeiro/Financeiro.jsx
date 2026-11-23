@@ -1,44 +1,138 @@
-import { Link } from "react-router-dom";
-import "./Financeiro.css";
+import { useCallback, useEffect, useState } from "react";
+import { Button } from "react-bootstrap";
+import "../../styles/paginas.css";
 
-export default function Financeiro() {
+const API = "http://localhost:3001";
+const INTERVALO_ATUALIZACAO_MS = 30000;
+
+const moeda = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+
+function Cartao({ rotulo, valor }) {
   return (
-    <div className="fin">
-      <section className="fin-card">
-        <div className="fin-faixa" aria-hidden="true" />
+    <div className="pg-stat">
+      <div className="pg-stat-rotulo">{rotulo}</div>
+      <div className="pg-stat-valor">{valor}</div>
+    </div>
+  );
+}
 
-        <div className="fin-corpo">
-          <svg
-            className="fin-icone"
-            viewBox="0 0 24 24"
-            width="56"
-            height="56"
-            aria-hidden="true"
+function Secao({ titulo, children }) {
+  return (
+    <>
+      <h3 className="pg-subtitulo">{titulo}</h3>
+      <div className="pg-stats" style={{ flexWrap: "wrap" }}>
+        {children}
+      </div>
+    </>
+  );
+}
+
+export default function Finaceiro() {
+  const [dados, setDados] = useState(null);
+  const [erro, setErro] = useState("");
+  const [carregando, setCarregando] = useState(true);
+
+  const carregar = useCallback(async () => {
+    try {
+      const resp = await fetch(`${API}/dashboard`);
+      if (!resp.ok) {
+        const retorno = await resp.json().catch(() => ({}));
+        throw new Error(retorno.erro || "Não foi possível carregar o painel.");
+      }
+      setDados(await resp.json());
+      setErro("");
+    } catch (e) {
+      setErro(
+        e instanceof TypeError
+          ? "Não foi possível conectar ao servidor. Verifique se ele está ligado."
+          : e.message
+      );
+    } finally {
+      setCarregando(false);
+    }
+  }, []);
+
+  // Atualização dinâmica: a cada 30 s, ao voltar para a aba e pelo botão "Atualizar"
+  useEffect(() => {
+    carregar();
+
+    const timer = setInterval(() => {
+      if (!document.hidden) carregar();
+    }, INTERVALO_ATUALIZACAO_MS);
+
+    function aoVoltarParaAba() {
+      if (!document.hidden) carregar();
+    }
+    document.addEventListener("visibilitychange", aoVoltarParaAba);
+
+    return () => {
+      clearInterval(timer);
+      document.removeEventListener("visibilitychange", aoVoltarParaAba);
+    };
+  }, [carregar]);
+
+  return (
+    <div className="pg">
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "0.5rem",
+        }}
+      >
+        <h2 className="pg-titulo">Painel</h2>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+          {dados && (
+            <span className="pg-item-sub">
+              Atualizado às {new Date(dados.atualizadoEm).toLocaleTimeString("pt-BR")}
+            </span>
+          )}
+          <Button
+            variant="secondary"
+            className="pg-btn pg-btn-sec"
+            onClick={carregar}
           >
-            <path
-              d="M3 18h18M5 18a7 7 0 0 1 14 0M12 6v5M7.5 8.5l2 2.5M16.5 8.5l-2 2.5"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-
-          <span className="fin-pilula">Em construção</span>
-          <h1 className="fin-titulo">Financeiro</h1>
-          <p className="fin-texto">
-            Estamos montando esta área. Em breve você vai acompanhar
-            recebimentos, contas a pagar e o fluxo de caixa por aqui.
-          </p>
-
-          <Link to="/" className="fin-botao">
-            Voltar ao início
-          </Link>
+            Atualizar
+          </Button>
         </div>
+      </div>
 
-        <div className="fin-faixa" aria-hidden="true" />
-      </section>
+      {erro && <div className="pg-aviso" role="alert">{erro}</div>}
+      {carregando && !dados && <div className="pg-vazio">Carregando painel...</div>}
+
+      {dados && (
+        <>
+          <Secao titulo="Vendas no mês">
+            <Cartao rotulo="Total vendido (pedidos pagos)" valor={moeda.format(dados.vendas.totalNoMes)} />
+            <Cartao rotulo="Pedidos no mês" valor={dados.pedidos.noMes} />
+          </Secao>
+
+          <Secao titulo="Situação dos pedidos">
+            <Cartao rotulo="Em aberto" valor={dados.pedidos.emAberto} />
+            <Cartao rotulo="Aguardando pagamento" valor={dados.pedidos.aguardandoPagamento} />
+            <Cartao rotulo="Finalizados" valor={dados.pedidos.finalizados} />
+            <Cartao rotulo="Cancelados" valor={dados.pedidos.cancelados} />
+            <Cartao rotulo="Total de pedidos" valor={dados.pedidos.total} />
+          </Secao>
+
+          <Secao titulo="Produtos">
+            <Cartao rotulo="Cadastrados" valor={dados.produtos.total} />
+            <Cartao rotulo="Disponíveis" valor={dados.produtos.disponiveis} />
+            <Cartao rotulo="Indisponíveis" valor={dados.produtos.indisponiveis} />
+            <Cartao rotulo="Estoque baixo" valor={dados.produtos.estoqueBaixo} />
+          </Secao>
+
+          <Secao titulo="Cadastros">
+            <Cartao rotulo="Clientes cadastrados" valor={dados.clientes.total} />
+            <Cartao rotulo="Novos clientes no mês" valor={dados.clientes.novosNoMes} />
+            <Cartao rotulo="Funcionários ativos" valor={dados.funcionarios.ativos} />
+            <Cartao rotulo="Categorias" valor={dados.categorias.total} />
+            <Cartao rotulo="Categorias ativas" valor={dados.categorias.ativas} />
+          </Secao>
+        </>
+      )}
     </div>
   );
 }
