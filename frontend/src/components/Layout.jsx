@@ -1,6 +1,6 @@
 import { useAuth } from "../contexts/AuthContext";
 import { useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { Button, Nav, Offcanvas } from "react-bootstrap";
 import "./Layout.css";
 
@@ -9,6 +9,7 @@ const menu = [
     { nome: "Clientes", rota: "/clientes" },
     { nome: "Categorias", rota: "/categorias" },
     { nome: "Produtos", rota: "/produtos" },
+    { nome: "Funcionários", rota: "/funcionarios" },
     { nome: "Pedidos", rota: "/pedidos" },
     { nome: "Financeiro", rota: "/financeiro" },
 ];
@@ -76,7 +77,13 @@ export default function Layout() {
             return false;
         }
     });
-    const { usuario } = useAuth();
+    const { usuario, logout } = useAuth();
+    const navigate = useNavigate();
+
+    function handleLogout() {
+        logout();
+        navigate("/login", { replace: true });
+    }
 
     function alternarMenu() {
         const novo = !recolhido;
@@ -95,14 +102,26 @@ export default function Layout() {
                     <h1 className="h5 text-center mb-4">
                         <Logo altura={80} />
                     </h1>
+
                     <Menu />
+
                     <div className="mt-auto usuario-card">
                         <div className="avatar" />
+
                         <div>
                             <div className="nome">{usuario?.nome}</div>
-                            <div className="cargo">{usuario?.cargo}</div>
+
+                            <Button
+                                variant="outline-danger"
+                                size="sm"
+                                className="mt-2"
+                                onClick={handleLogout}
+                            >
+                                Sair
+                            </Button>
                         </div>
                     </div>
+
                     <button
                         type="button"
                         className="menu-toggle mx-auto mt-3"
