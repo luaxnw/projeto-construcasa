@@ -6,6 +6,6 @@ const { requirePermissao } = require("../auth/auth.config");
 
 const router = express.Router();
 
-router.get("/dashboard", requireJWTAuth, requirePermissao("ADMIN"), controller.resumo);
+router.get("/dashboard", controller.resumo);
 
 module.exports = router;
